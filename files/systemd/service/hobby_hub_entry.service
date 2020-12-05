@@ -1,0 +1,11 @@
+[Unit]
+Description=starts the entry script for the hobby-hub
+Documentation=https://github.com/Senior-Design-0x07/the-hobby-hub/wiki
+
+[Service]
+Type=oneshot
+ExecStart=/etc/hobby-hub/start.sh
+
+[Install]
+WantedBy=multi-user.target
+
