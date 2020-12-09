@@ -4,7 +4,8 @@
 #include <unistd.h>
 using namespace std;
 
-#define namespace LED0_PATH "/sys/class/leds/beaglebone:green:usr0"
+#define LED0_PATH "/sys/class/leds/beaglebone:green:usr0"
+
 int main(int argc, char* argv[]){
 	fstream fs;
 	

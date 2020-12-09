@@ -4,7 +4,7 @@
 #include <unistd.h>
 using namespace std;
 
-#define namespace LED1_PATH "/sys/class/leds/beaglebone:green:usr1"
+#define LED1_PATH "/sys/class/leds/beaglebone:green:usr1"
 int main(int argc, char* argv[]){
 	fstream fs;
 	
