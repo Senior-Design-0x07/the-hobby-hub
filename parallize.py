@@ -3,7 +3,7 @@
 import os
 import sys
 import argparse
-import subprocess
+from subprocess import Popen
 from pathlib import Path
 
 
@@ -14,15 +14,15 @@ def main(arguments):
     For .c files:
         Uses a makefile if in the directory, or gcc to compile
 
-
     Args:
         arguments (string): [description]
     """
-    parser = argparse.ArgumentParser(
-        description=__doc__,
-        formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser = argparse.ArgumentParser(description=__doc__)
 
-    parser.add_argument('program_directory', help="Directory containing user programs to run", type=dir_path)
+    parser.add_argument('program_directory',
+                        help="Directory containing user programs to run",
+                        type=dir_path)
+
     # TODO add output file for each program in a specified output directory
 
     args = parser.parse_args(arguments)
@@ -35,23 +35,22 @@ def main(arguments):
     c_files = list(program_dir.glob('**/*.c'))
     cpp_files = list(program_dir.glob('**/*.cpp'))
 
-    # compile c files
+    # TODO compile c files
 
     programs = py_files + c_files + cpp_files
+    program_ids = []
 
     for program in py_files:
-        subprocess.run(['python3', program, '&'])
-
-
+        pid = Popen(["python3", program]).pid
+        program_ids.append(pid)
 
     # iterate over each of the .c and .py files in the directory
 
     # kickoff each program
 
-    # exit
-
-    print(py_files)
-    print(c_files)
+    print(f'Now running:')
+    for program, pid in zip(programs, program_ids):
+        print(f'Program: {program}, pid: {pid}')
 
 
 def dir_path(string):
