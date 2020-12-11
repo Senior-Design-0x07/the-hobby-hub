@@ -3,19 +3,22 @@
 import os
 import sys
 import argparse
-from subprocess import Popen
+from subprocess import Popen, run
 from pathlib import Path
 
 
 def main(arguments):
     """Takes a directory containing user programs and runs them as seperate processes
 
+    May require elevated priveges if the supplied directory is restricted (i.e. use
+    sudo when calling this)
+
     Only runs .c, .cpp, and .py files for now
-    For .c files:
-        Uses a makefile if in the directory, or gcc to compile
+    For .c and .cpp files:
+        Uses g++ to compile and places excecutable in program_directory/obj
 
     Args:
-        arguments (string): [description]
+        arguments (list): list of arguments
     """
     parser = argparse.ArgumentParser(description=__doc__)
 
@@ -35,21 +38,27 @@ def main(arguments):
     c_files = list(program_dir.glob('**/*.c'))
     cpp_files = list(program_dir.glob('**/*.cpp'))
 
-    # TODO compile c files
-
-    programs = py_files + c_files + cpp_files
-    program_ids = []
+    programs = {} # program name : program id
 
     for program in py_files:
         pid = Popen(["python3", program]).pid
-        program_ids.append(pid)
+        programs[program] = pid
 
-    # iterate over each of the .c and .py files in the directory
+    if c_files or cpp_files:
+        print('Compiling source files...')
 
-    # kickoff each program
+    Path(program_dir, 'obj').mkdir(exist_ok=True)
+    for source_file in c_files + cpp_files:
+        program = Path(source_file.parent, 'obj', source_file.name.split('.')[0])
+        run(["g++", '-o', program, source_file])
+        pid = Popen([program]).pid
+        programs[program] = pid
+
+    if c_files or cpp_files:
+        print('Finished compilation')
 
     print(f'Now running:')
-    for program, pid in zip(programs, program_ids):
+    for program, pid in programs.items():
         print(f'Program: {program}, pid: {pid}')
 
 
