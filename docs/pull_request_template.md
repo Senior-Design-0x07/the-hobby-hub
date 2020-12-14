@@ -1,4 +1,4 @@
-<!-- Ensure the Pull Rquest name is descriptive and accurate -->
+<!-- Ensure the Pull Request name is descriptive and accurate -->
 
 # Date
 <!-- today's date -->

@@ -30,3 +30,15 @@
 *.exe
 *.out
 *.app
+
+#------------
+#Web Server
+#------------
+# -- Backend
+*.ttf
+*.pyc
+
+# -- Frontend
+*.last_build_id
+web/frontend/assets/NOTICES
+
