@@ -31,5 +31,13 @@
 *.out
 *.app
 
-# Build artifacts
-obj/
+#------------
+# Web Server
+#------------
+# -- Backend
+*.ttf
+*.pyc
+
+# -- Frontend
+*.last_build_id
+web/frontend/assets/NOTICES
