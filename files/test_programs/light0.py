@@ -2,7 +2,7 @@ import Adafruit_BBIO.GPIO as GPIO
 import time
 
 USR0_LED = "USR0"
-delay = 0.5
+delay = 1
 GPIO.setup(USR0_LED, GPIO.OUT)
 
 while (True):
