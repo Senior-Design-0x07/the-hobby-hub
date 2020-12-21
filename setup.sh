@@ -1,13 +1,13 @@
 #/bin/sh
 
-# Author : 
-# Description :
+# Author : Draven Schilling
+# Description : Runs all scripts needed to setup board on boot
 
 echo ""
 echo ""
 echo "Running hobby-hub setup script."
 echo "This may take a few moments..."
-echo""
+echo ""
 
 echo "||||||||||||||||||||||||||||||||"
 echo "||| updating device packages |||"

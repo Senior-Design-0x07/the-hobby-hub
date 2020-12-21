@@ -37,7 +37,5 @@ echo " - Installed Python dependencies"
 # echo " - Virtual Environment Created"
 
 #Update user how to run server
-echo ""
-echo ""
 echo "COMPLETED Flask Backend Install script."
 
