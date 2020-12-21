@@ -2,8 +2,8 @@
 <!-- Author: Anthony Bartman -->
 <!-- Date: 12/14/20 -->
 
-# Starting Server:
-1. cd to web/backend
+# Starting Dev Server:
+1. cd to files/web/backend
 2. Use 'python start-server.py' 
 
 # Access Server:
@@ -15,4 +15,5 @@
 # Stopping Server:
 1. CTRL + C in terminal
 
-
+**Currently, as of 12/20/2020, server is already running on boot. This is what the 'web team' will
+be using to develop the website.
