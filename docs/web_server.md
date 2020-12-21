@@ -4,13 +4,15 @@
 
 # Starting Dev Server:
 1. cd to files/web/backend
-2. Use 'python start-server.py' 
+2. Use 'python start-server.py'
+* If it says server is already running, remove our ```/etc/hobby-hub directory```, reboot beaglebone, and
+then start the server. The ```setup.sh``` script will reinstall the /etc/hobby-hub directory on boot
 
 # Access Server:
 1. Open Chrome, and use http://192.168.7.2:5000 as URL
 2. Or use http://192.168.7.2:5000/api/Hello to view RESTful api data response"
 3. If there is data in frontend folder, use http://192.168.7.2:5000/index.html
-4. If IP does not work, try localhost:5000...
+4. If that IP does not work, try localhost:5000
 
 # Stopping Server:
 1. CTRL + C in terminal
