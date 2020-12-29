@@ -46,9 +46,12 @@ the ```Google USB Driver```
 8. Run cmd: ```flutter doctor``` to verify everything is working
 
 ## Run Project on Emulator(Mobile)
-1. Click Green Play button on Android Studio while phone emulator is open to run our project on the emulator. It will take some
+- > For Android Studio, click green play button while phone emulator is selected to run project on the emulator. It will take some
 time the first time project is building. 
-*All this is doing is running the command ```flutter run``` in the top-directory of project. Will use this if using VS Code
+*All this is doing is running the command ```flutter run``` in the top-directory of project.*
+- > For VS Code, towards bottom left you might see Chrome, click that to change which emulator to run it on by clicking the 'Pixel 3a
+emulator'. Click 'Run without debugging' from VS Code towards the top right of the VS Code to run project.
+
 ## Run Project on Website
 1. **ONLY WORKS** by this...cd to project directory and run: ```flutter run -d chrome --release```
 
