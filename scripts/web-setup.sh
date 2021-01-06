@@ -13,5 +13,5 @@ rm -r files/web/backend/__pycache__
 rm -r files/web/backend/resources/__pycache__
 
 #Copy directory to our folder on board
-#cp -r files/web /etc/hobby-hub/
+cp -r files/web /etc/hobby-hub/
 
