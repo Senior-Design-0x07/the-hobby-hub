@@ -25,6 +25,7 @@ pip3 install flask_restful==0.3.6
 pip3 install flask_script==2.0.6
 pip3 install marshmallow==2.14.0
 pip3 install flask_marshmallow==0.8.0
+pip3 install -U flask-cors
 echo " - Installed Python dependencies"
 
 #Install Virtual Env. to create isolated Python Env.

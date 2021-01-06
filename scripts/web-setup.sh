@@ -2,8 +2,7 @@
 
 # Author : Anthony Bartman
 # Description : This will install all neccessary files for
-# our Flask backend server. Mostly from this tutorial: 
-# https://www.codementor.io/@dongido/how-to-build-restful-apis-with-python-and-flask-12qto530jd
+# our web Flask Backend and Flutter Frontend to our folder on board
 
 echo ""
 echo "Copying web directory to /etc/hobby-hub "
@@ -14,5 +13,5 @@ rm -r files/web/backend/__pycache__
 rm -r files/web/backend/resources/__pycache__
 
 #Copy directory to our folder on board
-cp -r files/web /etc/hobby-hub/
+#cp -r files/web /etc/hobby-hub/
 

@@ -50,7 +50,7 @@ the ```Google USB Driver```
 time the first time project is building. 
 *All this is doing is running the command ```flutter run``` in the top-directory of project. Will use this if using VS Code
 ## Run Project on Website
-1. **ONLY WORKS** by this...cd to project directory and run: ```flutter run -d chrome --version```
+1. **ONLY WORKS** by this...cd to project directory and run: ```flutter run -d chrome --release```
 
 ## Using VS Code as IDE
 1. Open Repo in VS Code and go to extensions by CTRL+SHIFT+X
