@@ -37,7 +37,7 @@ flutter bin file(mine is ```C:\flutter\bin```)
 and open with android studio to setup virtual devices.
 (Watch Video for the parts below if stuck)
 2. Click ```Tools -> AVD Manager``` and create a new virtual device
-3. We will use the ```Pixel 3a XL``` to test code for Android Devices, ```Release Q```, and ```Hardware Graphics - GLES 2.0```
+3. We will use the ```Pixel 3a XL``` to test code for Android Devices, download ```Release Oreo``` for http and ```Release Q``` eventually for https, and select ```Hardware Graphics - GLES 2.0``` for both.
 4. Click the play button from the AVD manager to verify it works
 5. On main Android Studio screen, a yellow header is there with the words: 'install dependencies' Click it.
 6. After that click and Android Studio reboots, in bottom left click 'configure plugins' and install it.
