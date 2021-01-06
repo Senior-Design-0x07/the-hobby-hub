@@ -60,9 +60,11 @@ emulator'. Click 'Run without debugging' from VS Code towards the top right of t
 2. Search for 'flutter' and install that extension
 3. Open cmd prompt by pressing ```CTRL + ` ```
 4. Run command: ```flutter devices``` to see the hiearchy.
-4a. To develop with mobile app, open Android Studio AVD Manager and open the phone emulator before performing
+   
+   a. To develop with mobile app, open Android Studio AVD Manager and open the phone emulator before performing
 the ```flutter run``` command so that it will delegate to the phone emulator rather than chrome.
-4b. Run command :```flutter run -d chrome --version``` to develop for website.
+   
+   b. Run command :```flutter run -d chrome --version``` to develop for website.
 
 #Tips when developing with Flutter
 1. Always have flutter 'running' when developing our UI because the full build/rebuilding process takes a long time.
