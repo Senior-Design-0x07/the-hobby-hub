@@ -14,4 +14,5 @@ cp files/src/program_manager.py /etc/hobby-hub/ # program manager itself
 sudo useradd --comment "Development User" --user-group --create-home --shell /bin/bash dev
 sudo usermod --append --groups dev debian 
 sudo usermod --append --groups dialout,users,systemd-journal,bluetooth,i2c,gpio,pwm,spi,iio dev
-echo -e "dev\ndev" | sudo passwd dev
+sleep 1
+echo 'dev:dev' | sudo chpasswd
