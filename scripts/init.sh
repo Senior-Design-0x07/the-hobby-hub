@@ -9,3 +9,6 @@ cp files/init/start.sh /etc/hobby-hub/
 # Program manager
 mkdir -p /etc/hobby-hub/out/ # contains output of program manager
 cp files/src/program_manager.py /etc/hobby-hub/ # program manager itself
+
+# Pin mapping configuration
+sudo touch /etc/hobby-hub/pin_mapping.json
