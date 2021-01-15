@@ -11,4 +11,4 @@ mkdir -p /etc/hobby-hub/out/ # contains output of program manager
 cp files/src/program_manager.py /etc/hobby-hub/ # program manager itself
 
 # Pin mapping configuration
-sudo touch /etc/hobby-hub/pin_mapping.json
+echo "{}" | sudo tee -a /etc/hobby-hub/pin_mapping.json # creates empty, but valid JSON file
