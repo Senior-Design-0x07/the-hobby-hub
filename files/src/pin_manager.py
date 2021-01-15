@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 
 import sys
-
+import json
+import argparse
+import logging
 
 def main(arguments):
     """API for accessing the common pin mapping file
@@ -16,10 +18,26 @@ def main(arguments):
     Args:
         arguments (list): list of arguments
     """
-    pass
+
+    logging.basicConfig(level=logging.INFO, )
+
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('pin_config_filename',
+                        help="JSON file containing the pin mapping file")
+
+    parser.add_argument('-r', '--request-pin',
+                        metavar='TAG',
+                        help="Adds this tag to the pin mapping file")
+
+    args = parser.parse_args(arguments)
+
+    logging.info(f'JSON file is {args.pin_config_filename}')
+
+    if args.request_pin:
+        request_pin(args.pin_config_filename, args.request_pin)
 
 
-def request_pin(tag):
+def request_pin(pin_config_filename, tag):
     """Adds the tag to the mapping file as a key-value pair
 
     The value (actual pin) will be dynamically changed by the web UI,
@@ -30,7 +48,17 @@ def request_pin(tag):
     Args:
         tag (str): the tag to be the key in the config file
     """
-    pass
+    logging.info(f'Requesting pin {tag}')
+    with open(pin_config_filename, 'r+') as f:
+        pin_config = json.load(f)
+        if tag in pin_config:
+            logging.info(f'{tag} already in JSON file')
+        else:
+            pin_config[tag] = "P0"
+            f.seek(0) # should reset file position to the beginning.
+            json.dump(pin_config, f, indent=4)
+            f.truncate() # remove remaining part
+            logging.info(f'{tag} added to JSON with placeholder')
 
 
 def get_pin(tag):
@@ -55,6 +83,7 @@ def clear_unused():
 
     Only the pins which are requested from the running programs should be available in the JSON file
     """
+    pass
 
 
 if __name__ == '__main__':
