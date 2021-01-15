@@ -37,6 +37,10 @@ def main(arguments):
                         action='store_true',
                         help="Resets the pin configuration JSON file")
 
+    parser.add_argument('-c', '--clear-unused',
+                        action='store_true',
+                        help="Identify and remove unused key-value pairs")
+
     args = parser.parse_args(arguments)
 
     logging.info(f'JSON file is {args.pin_config_filename}')
@@ -53,6 +57,9 @@ def main(arguments):
 
     if args.reset_config:
         reset(args.pin_config_filename)
+
+    if args.clear_unused:
+        clear_unused(args.pin_config_filename)
 
 
 def request_pin(pin_config_filename, tag):
@@ -72,7 +79,9 @@ def request_pin(pin_config_filename, tag):
         if tag in pin_config:
             logging.info(f'{tag} already in JSON file')
         else:
-            pin_config[tag] = "P0"
+            pin_config[tag] = {}
+            pin_config[tag]["pin"] = "P0"
+            pin_config[tag]["in_use"] = False
             f.seek(0) # should reset file position to the beginning.
             json.dump(pin_config, f, indent=4)
             f.truncate() # remove remaining part
@@ -90,11 +99,16 @@ def get_pin(pin_config_filename, tag):
     """
     logging.info(f'Getting pin {tag}')
     value = None
-    with open(pin_config_filename, 'r') as f:
+    with open(pin_config_filename, 'r+') as f:
         pin_config = json.load(f)
         if tag in pin_config:
             value = pin_config[tag]
             logging.info(f'{tag}:{value} found in JSON file')
+            pin_config[tag]["in_use"] = True
+            f.seek(0) # should reset file position to the beginning.
+            json.dump(pin_config, f, indent=4)
+            f.truncate() # remove remaining part
+            logging.info(f'{tag} marked as in use')
 
     return value
 
@@ -107,12 +121,22 @@ def reset(pin_config_filename):
         logging.info('Config reset')
 
 
-def clear_unused():
+def clear_unused(pin_config_filename):
     """Identify and remove unused key-value pairs
 
     Only the pins which are requested from the running programs should be available in the JSON file
     """
-    pass
+    logging.info('Clearing unused pins')
+    with open(pin_config_filename, 'r+') as f:
+        pin_config = json.load(f)
+        unused_pins = [tag for tag in pin_config if pin_config[tag]["in_use"] == False]
+        for tag in unused_pins:
+            logging.info(f'Removing unused pin {tag}')
+            del pin_config[tag]
+        f.seek(0) # should reset file position to the beginning.
+        json.dump(pin_config, f, indent=4)
+        f.truncate() # remove remaining part
+        logging.info('All unused pins cleared')
 
 
 if __name__ == '__main__':
