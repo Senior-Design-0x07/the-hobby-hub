@@ -33,6 +33,10 @@ def main(arguments):
                      metavar='TAG',
                      help="Return the value associated with the key in the json file.")
 
+    parser.add_argument('-x', '--reset-config',
+                        action='store_true',
+                        help="Resets the pin configuration JSON file")
+
     args = parser.parse_args(arguments)
 
     logging.info(f'JSON file is {args.pin_config_filename}')
@@ -46,6 +50,9 @@ def main(arguments):
             print(f'The value associated with {args.get_pin} is {value}')
         else:
             print(f'No value associated with {args.get_pin} was found')
+
+    if args.reset_config:
+        reset(args.pin_config_filename)
 
 
 def request_pin(pin_config_filename, tag):
@@ -92,9 +99,12 @@ def get_pin(pin_config_filename, tag):
     return value
 
 
-def reset():
+def reset(pin_config_filename):
     """Resets the pin configuration JSON file"""
-    pass
+    logging.info('Resetting config')
+    with open(pin_config_filename, 'w') as f:
+        f.write("{}")
+        logging.info('Config reset')
 
 
 def clear_unused():
