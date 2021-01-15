@@ -29,12 +29,23 @@ def main(arguments):
                         metavar='TAG',
                         help="Adds this tag to the pin mapping file")
 
+    parser.add_argument('-g', '--get-pin',
+                     metavar='TAG',
+                     help="Return the value associated with the key in the json file.")
+
     args = parser.parse_args(arguments)
 
     logging.info(f'JSON file is {args.pin_config_filename}')
 
     if args.request_pin:
         request_pin(args.pin_config_filename, args.request_pin)
+
+    if args.get_pin:
+        value = get_pin(args.pin_config_filename, args.get_pin)
+        if value is not None:
+            print(f'The value associated with {args.get_pin} is {value}')
+        else:
+            print(f'No value associated with {args.get_pin} was found')
 
 
 def request_pin(pin_config_filename, tag):
@@ -61,7 +72,7 @@ def request_pin(pin_config_filename, tag):
             logging.info(f'{tag} added to JSON with placeholder')
 
 
-def get_pin(tag):
+def get_pin(pin_config_filename, tag):
     """Return the value associated with the key in the json file.
 
     Args:
@@ -70,7 +81,15 @@ def get_pin(tag):
     Returns:
         str: value associated with tag
     """
-    return ""
+    logging.info(f'Getting pin {tag}')
+    value = None
+    with open(pin_config_filename, 'r') as f:
+        pin_config = json.load(f)
+        if tag in pin_config:
+            value = pin_config[tag]
+            logging.info(f'{tag}:{value} found in JSON file')
+
+    return value
 
 
 def reset():
