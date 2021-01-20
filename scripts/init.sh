@@ -12,3 +12,4 @@ cp files/src/program_manager.py /etc/hobby-hub/ # program manager itself
 
 # Pin mapping configuration
 echo "{}" | sudo tee -a /etc/hobby-hub/pin_mapping.json # creates empty, but valid JSON file
+cp files/src/pin_manager.py /etc/hobby-hub/ # pin manager itself
