@@ -44,8 +44,8 @@ def main(arguments):
         pid = Popen(["python3", program]).pid
         programs[program] = pid
 
-    if c_files or cpp_files:
-        print('Compiling source files...')
+    #if c_files or cpp_files:
+        #print('Compiling source files...')
 
     Path(program_dir, 'obj').mkdir(exist_ok=True)
     for source_file in c_files + cpp_files:
@@ -54,12 +54,12 @@ def main(arguments):
         pid = Popen([program]).pid
         programs[program] = pid
 
-    if c_files or cpp_files:
-        print('Finished compilation')
+    #if c_files or cpp_files:
+        #print('Finished compilation')
 
-    print(f'Now running:')
+    #print(f'Now running:')
     for program, pid in programs.items():
-        print(f'Program: {program}, pid: {pid}')
+        print(f'{program} {pid}')
 
 
 def dir_path(string):
