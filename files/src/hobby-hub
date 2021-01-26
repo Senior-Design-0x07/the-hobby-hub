@@ -124,6 +124,10 @@ done
 #---------------------------------------------------------------------------------------------------------#
 
 
+RUNNING_PROGRAMS="/etc/hobby-hub/out/running_programs.txt"
+PAUSED_PROGRAMS="/etc/hobby-hub/out/paused_programs.txt"
+
+
 if [ $HELP -eq 1 ]
 then
     echo options:
@@ -139,17 +143,40 @@ then
 else
     if [ $LIST -eq 1 ]
     then
-        PROGRAM_DIR="/etc/hobby-hub/out/running_programs.txt"
+        echo 'Running Programs:'
         while read -r line
         do
             IFS=' '
+            ARG=1
             read -a strarr <<< "$line"
-            for word in "${strarr[@]}";
-                do
-                if [ $word]
-                #printf "$word\n"
+            for word in "${strarr[@]}"
+            do
+                if [ $ARG -eq 1 ]
+                then
+                    b=$(basename $word)
+                    echo $b
+                fi
+                ARG=2
             done
-            #echo "$line"
-        done < "$PROGRAM_DIR"
+        done < "$RUNNING_PROGRAMS"
+
+        echo ' '
+        echo 'Paused Programs:'
+        while read -r line
+        do
+            IFS=' '
+            ARG=1
+            read -a strarr <<< "$line"
+            for word in "${strarr[@]}"
+            do
+                if [ $ARG -eq 1 ]
+                then
+                    b=$(basename $word)
+                    echo $b
+                fi
+                ARG=2
+            done
+        done < "$PAUSED_PROGRAMS"
+        echo ' '
     fi
 fi
