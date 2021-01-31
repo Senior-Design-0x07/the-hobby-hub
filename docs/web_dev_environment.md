@@ -25,7 +25,7 @@ is a viable option as well, but I want everything in one IDE. Your choice though
 flutter bin file(mine is ```C:\flutter\bin```)
 5. Open CMD, type in 'flutter' to verify if it is in the PATH correctly
 **Flutter Web Config**(ref: [Link](https://flutter.dev/docs/get-started/web) )
-6. Run: 'flutter channel beta', then 'flutter upgrade', and 'flutter config --enable-web'
+6. Run: ```flutter channel beta```, then ```flutter upgrade```, and ```flutter config --enable-web```
 (Let me know if this works for you guys)
 
 ## Setup Android Studio

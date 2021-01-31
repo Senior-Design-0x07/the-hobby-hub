@@ -10,6 +10,7 @@ cp files/init/start.sh /etc/hobby-hub/
 mkdir -p /etc/hobby-hub/out/ # contains output of program manager
 cp files/src/program_manager.py /etc/hobby-hub/ # program manager itself
 
+
 # Create dev user & group. add new user to required groups.
 sudo useradd --comment "Development User" --user-group --create-home --shell /bin/bash dev
 sudo usermod --append --groups dev debian 
@@ -21,3 +22,8 @@ echo 'dev:dev' | sudo chpasswd
 sudo cp files/system/motd /etc/
 sudo cp files/system/sshd_config /etc/ssh/
 sudo cp files/system/issue.net /etc/
+
+# Pin mapping configuration
+echo "{}" | sudo tee -a /etc/hobby-hub/pin_mapping.json # creates empty, but valid JSON file
+cp files/src/pin_manager.py /etc/hobby-hub/ # pin manager itself
+
