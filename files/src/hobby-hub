@@ -133,7 +133,7 @@ then
     echo options:
     echo "[-h|--help]                     usage instructions. Help output."
     echo "[-r|--restart]                  restarts the currently running programs."
-    echo "[-s|--stop]                     kills the currently running programs. "
+    echo "[-s|--stop]                     kills the currently running and paused programs. "
     echo "[-p|--pause]                    pauses the currently running programs."
     echo "[-c|--continue]                 resumes currently paused programs."
     echo "[-l|--list]                     lists currently running programs."
@@ -141,6 +141,7 @@ then
     echo "[-d|--debug] program_file       temporarly runs provided program file."
     echo "[-z|--remove] program_file      stop and remove provided program."
 else
+    ####################  LIST  ####################
     if [ $LIST -eq 1 ]
     then
         echo 'Running Programs:'
@@ -178,5 +179,62 @@ else
             done
         done < "$PAUSED_PROGRAMS"
         echo ' '
+    fi
+
+    ####################  STOP  ####################
+    if [ $STOP -eq 1 ]
+    then
+        while read -r line
+        do
+            IFS=' '
+            ARG=1
+            read -a strarr <<< "$line"
+            for word in "${strarr[@]}"
+            do
+                if [ $ARG -eq 2 ]
+                then
+                    kill -9 $word
+                fi
+                ARG=2
+            done
+        done < "$RUNNING_PROGRAMS"
+        truncate -s 0 $RUNNING_PROGRAMS
+
+        while read -r line
+        do
+            IFS=' '
+            ARG=1
+            read -a strarr <<< "$line"
+            for word in "${strarr[@]}"
+            do
+                if [ $ARG -eq 2 ]
+                then
+                    kill -SIGKILL $word
+                fi
+                ARG=2
+            done
+        done < "$PAUSED_PROGRAMS"
+        truncate -s 0 $PAUSED_PROGRAMS
+    fi
+
+    ####################  PAUSE  ####################
+    if [ $PAUSE -eq 1 ]
+    then
+        while read -r line
+        do
+            IFS=' '
+            ARG=1
+            read -a strarr <<< "$line"
+            for word in "${strarr[@]}"
+            do
+                if [ $ARG -eq 2 ]
+                then
+                    kill -SIGSTOP $word
+                fi
+                ARG=2
+            done
+            echo "$line" >> "$PAUSED_PROGRAMS"
+        done < "$RUNNING_PROGRAMS"
+        truncate -s 0 $RUNNING_PROGRAMS
     fi
 fi
