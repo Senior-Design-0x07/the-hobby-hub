@@ -5,6 +5,119 @@ import json
 import argparse
 import logging
 
+class Pin:
+    GPIO = 1
+    PWM = 2
+    I2C = 3
+    ANALOG = 4
+    SPECIAL = 5
+
+PIN_MAP_FILE = "/etc/hobby-hub/pin_mapping.json"
+
+# Table generated based on https://github.com/jadonk/bonescript/blob/master/src/bone.js
+# (Adafruit_BBIO_NAME, Pin_Number)
+pin_table = (
+  ("USR0", 53, Pin.SPECIAL),
+  ("USR1", 54, Pin.SPECIAL),
+  ("USR2", 55, Pin.SPECIAL),
+  ("USR3", 56, Pin.SPECIAL),
+  #("DGND", 0),
+  #("DGND", 0),
+  ("GPIO1_6", 38, Pin.GPIO),
+  ("GPIO1_7", 39, Pin.GPIO),
+  ("GPIO1_2", 34, Pin.GPIO),
+  ("GPIO1_3", 35, Pin.GPIO),
+  ("TIMER4", 66, Pin.GPIO),
+  ("TIMER7", 67, Pin.GPIO),
+  ("TIMER5", 69, Pin.GPIO),
+  ("TIMER6", 68, Pin.GPIO),
+  ("GPIO1_13", 45, Pin.GPIO),
+  ("GPIO1_12", 44, Pin.GPIO),
+  ("EHRPWM2B", 23, Pin.PWM),
+  ("GPIO0_26", 26, Pin.GPIO),
+  ("GPIO1_15", 47, Pin.GPIO),
+  ("GPIO1_14", 46, Pin.GPIO),
+  ("GPIO0_27", 27, Pin.GPIO),
+  ("GPIO2_1", 65, Pin.GPIO),
+  ("EHRPWM2A", 22, Pin.PWM),
+  ("GPIO1_30", 62, Pin.GPIO),
+  ("GPIO1_5", 37, Pin.GPIO),
+  ("GPIO1_4", 36, Pin.GPIO),
+  ("GPIO1_31", 63, Pin.GPIO),
+  ("GPIO1_1", 33, Pin.GPIO),
+  ("GPIO1_0", 32, Pin.GPIO),
+  ("GPIO1_29", 61, Pin.GPIO),
+  ("GPIO2_22", 86, Pin.GPIO),
+  ("GPIO2_24", 88, Pin.GPIO),
+  ("GPIO2_23", 87, Pin.GPIO),
+  ("GPIO2_25", 89, Pin.GPIO),
+  ("UART5_CTSN", 10),
+  ("UART5_RTSN", 11),
+  ("UART4_RTSN", 9),
+  ("UART3_RTSN", 81),
+  ("UART4_CTSN", 8),
+  ("UART3_CTSN", 80),
+  ("UART5_TXD", 78),
+  ("UART5_RXD", 79),
+  ("GPIO2_12", 76, Pin.GPIO),
+  ("GPIO2_13", 77, Pin.GPIO),
+  ("GPIO2_10", 74, Pin.GPIO),
+  ("GPIO2_11", 75, Pin.GPIO),
+  ("GPIO2_8", 72, Pin.GPIO),
+  ("GPIO2_9", 73, Pin.GPIO),
+  ("GPIO2_6", 70, Pin.GPIO),
+  ("GPIO2_7", 71, Pin.GPIO),
+  #("DGND", 0),
+  #("DGND", 0),
+  #("VDD_3V3", 0),
+  #("VDD_3V3", 0),
+  #("VDD_5V", 0),
+  #("VDD_5V", 0),
+  #("SYS_5V", 0),
+  #("SYS_5V", 0),
+  #("PWR_BUT", 0),
+  #("SYS_RESETn", 0),
+  ("UART4_RXD", 30),
+  ("GPIO1_28", 60, Pin.GPIO),
+  ("UART4_TXD", 31),
+  ("EHRPWM1A", 50, Pin.PWM),
+  ("GPIO1_16", 48, Pin.GPIO),
+  ("EHRPWM1B", 51, Pin.PWM),
+  ("I2C1_SCL", 5),
+  ("I2C1_SDA", 4),
+  ("I2C2_SCL", 13, Pin.I2C),
+  ("I2C2_SDA", 12, Pin.I2C),
+  ("UART2_TXD", 3),
+  ("UART2_RXD", 2),
+  ("GPIO1_17", 49, Pin.GPIO),
+  ("UART1_TXD", 15),
+  ("GPIO3_21", 117, Pin.GPIO),
+  ("UART1_RXD", 14),
+  ("GPIO3_19", 115, Pin.GPIO),
+  ("SPI1_CS0", 113),
+  ("SPI1_D0", 111),
+  ("SPI1_D1", 112),
+  ("SPI1_SCLK", 110),
+  #("VDD_ADC", 0),
+  ("AIN4", 0, Pin.ANALOG),
+  #("GNDA_ADC", 0),
+  ("AIN6", 0, Pin.ANALOG),
+  ("AIN5", 0, Pin.ANALOG),
+  ("AIN2", 0, Pin.ANALOG),
+  ("AIN3", 0, Pin.ANALOG),
+  ("AIN0", 0, Pin.ANALOG),
+  ("AIN1", 0, Pin.ANALOG),
+  ("CLKOUT2", 20),
+  ("GPIO0_7", 7, Pin.GPIO),
+  #("DGND", 0),
+  #("DGND", 0),
+  #("DGND", 0),
+  #("DGND", 0)
+)
+
+
+
+
 def main(arguments):
     """API for accessing the common pin mapping file
 
@@ -141,3 +254,34 @@ def clear_unused(pin_config_filename):
 
 if __name__ == '__main__':
     sys.exit(main(sys.argv[1:]))
+
+def _get_pin(tag, type):
+    with open(PIN_MAP_FILE, 'r+') as f:
+        pin_config = json.load(f)
+        physical_pin = ""
+        if tag in pin_config:
+            if pin_config[tag]["type"] == type:
+                physical_pin = pin_config[tag]["pin"]
+            else:
+                raise KeyError("Requested pin " + tag + " of type: " + type + " already found as type: " + pin_config[tag]["type"])
+        else:
+            used_pins = []
+            for tag_f in pin_config:
+                used_pins.append(tag_f["pin"])
+            for tag_d in pin_table:
+                if (tag_d[0] not in used_pins) and (tag_d[2] == type):
+                    pin_config[tag] = {}
+                    pin_config[tag]["pin"] = tag_d[0]
+                    pin_config[tag]["type" ] = type
+                    physical_pin = tag_d[0]
+                    break
+            f.seek(0) # should reset file position to the beginning.
+            json.dump(pin_config, f, indent=4)
+            f.truncate() # remove remaining part
+            logging.info(f'{tag} added to JSON with placeholder')
+            return physical_pin
+
+
+def get_gpio(tag):
+    _get_pin(tag, Pin.GPIO)
+
