@@ -193,7 +193,8 @@ else
             do
                 if [ $ARG -eq 2 ]
                 then
-                    kill -9 $word
+                    # we don't actually need to be sudo to execute. circumvented by visudo
+                    sudo /etc/hobby-hub/commands/kill_process.sh $word
                 fi
                 ARG=2
             done
@@ -210,7 +211,7 @@ else
                 if [ $ARG -eq 2 ]
                 then
                     # we don't actually need to be sudo to execute. circumvented by visudo
-                    sudo ./etc/hobby-hub/commands/kill_process.sh 
+                    sudo /etc/hobby-hub/commands/kill_process.sh $word
                 fi
                 ARG=2
             done
@@ -231,7 +232,7 @@ else
                 if [ $ARG -eq 2 ]
                 then
                     # we don't actually need to be sudo to execute. circumvented by visudo
-                    sudo ./etc/hobby-hub/commands/pause_process.sh
+                    sudo /etc/hobby-hub/commands/pause_process.sh
                 fi
                 ARG=2
             done
