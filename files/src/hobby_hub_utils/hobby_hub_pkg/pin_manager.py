@@ -5,6 +5,8 @@ import json
 import argparse
 import logging
 
+from .pin import Pin, Led
+
 class Pin:
     GPIO = 1
     PWM = 2
@@ -114,9 +116,6 @@ pin_table = (
   #("DGND", 0),
   #("DGND", 0)
 )
-
-
-
 
 def main(arguments):
     """API for accessing the common pin mapping file
@@ -279,9 +278,13 @@ def _get_pin(tag, type):
             json.dump(pin_config, f, indent=4)
             f.truncate() # remove remaining part
             logging.info(f'{tag} added to JSON with placeholder')
-            return physical_pin
+
+        return physical_pin
 
 
 def get_gpio(tag):
-    _get_pin(tag, Pin.GPIO)
+    return Pin(_get_pin(tag, Pin.GPIO))
+
+def get_led(tag):
+    return Led(_get_pin(tag, Pin.SPECIAL))
 
