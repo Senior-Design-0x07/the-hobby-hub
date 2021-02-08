@@ -1,2 +1,2 @@
 #!/bin/sh
-kill -SIGSTOP $1
+kill -STOP $1

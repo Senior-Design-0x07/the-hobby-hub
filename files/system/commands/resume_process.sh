@@ -1,2 +1,2 @@
 #!/bin/sh
-kill -SIGCONT $1
+kill -CONT $1
