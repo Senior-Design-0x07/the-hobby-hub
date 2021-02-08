@@ -1,2 +1,2 @@
 #!/bin/sh
-/usr/bin/kill $1
+kill $1

@@ -8,11 +8,11 @@ cp files/init/start.sh /etc/hobby-hub/
 
 # Program manager
 mkdir -p /etc/hobby-hub/out/ # contains output of program manager
-chmod 666 /etc/hobby-hub/out/
+sudo chmod 777 /etc/hobby-hub/out/
 touch /etc/hobby-hub/out/paused_programs.txt
-chmod 666 /etc/hobby-hub/out/paused_programs.txt
+chmod 777 /etc/hobby-hub/out/paused_programs.txt
 touch /etc/hobby-hub/out/running_programs.txt
-chmod 666 /etc/hobby-hub/out/running_programs.txt
+chmod 777 /etc/hobby-hub/out/running_programs.txt
 cp files/src/program_manager.py /etc/hobby-hub/ # program manager itself
 
 # Hobby-hub command line utilitiy

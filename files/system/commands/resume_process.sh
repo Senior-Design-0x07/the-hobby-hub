@@ -1,2 +1,2 @@
-#!bin/sh
-/usr/bin/kill $(ps aux | grep 'target_application' | awk '{print $2}')
+#!/bin/sh
+kill -CONT $1

@@ -29,6 +29,11 @@ REMOVE_FILE=""
 
 OTHER_ARGUMENTS=()
 
+if [ $# -eq 0 ]
+then
+    HELP=1
+fi
+
 # Loop through arguments and process them
 for arg in "$@"
 do
@@ -51,7 +56,6 @@ do
         ;;
         -c|--continue) # Resume Running processes
         CONTINUE=1
-        echo byebye
         shift # Remove from processing
         ;;
         -l|--list) # List Running processes
@@ -113,6 +117,7 @@ do
         ;;
         *)
         OTHER_ARGUMENTS+=("$1")
+        HELP=1
         shift # Remove generic argument from processing
         ;;
     esac
@@ -232,12 +237,34 @@ else
                 if [ $ARG -eq 2 ]
                 then
                     # we don't actually need to be sudo to execute. circumvented by visudo
-                    sudo /etc/hobby-hub/commands/pause_process.sh
+                    sudo /etc/hobby-hub/commands/pause_process.sh $word
                 fi
                 ARG=2
             done
             echo "$line" >> "$PAUSED_PROGRAMS"
         done < "$RUNNING_PROGRAMS"
         truncate -s 0 $RUNNING_PROGRAMS
+    fi
+
+    ####################  RESUME  ####################
+    if [ $CONTINUE -eq 1 ]
+    then
+        while read -r line
+        do
+            IFS=' '
+            ARG=1
+            read -a strarr <<< "$line"
+            for word in "${strarr[@]}"
+            do
+                if [ $ARG -eq 2 ]
+                then
+                    # we don't actually need to be sudo to execute. circumvented by visudo
+                    sudo /etc/hobby-hub/commands/resume_process.sh $word
+                fi
+                ARG=2
+            done
+            echo "$line" >> "$RUNNING_PROGRAMS"
+        done < "$PAUSED_PROGRAMS"
+        truncate -s 0 $PAUSED_PROGRAMS
     fi
 fi
