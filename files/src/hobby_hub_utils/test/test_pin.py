@@ -2,7 +2,7 @@ from hobby_hub_pkg.pin_manager import get_led
 import unittest
 import time
 
-class TestStringMethods(unittest.TestCase):
+class TestPinManager(unittest.TestCase):
 
     def test_blink_led0(self):
         led = get_led("myled0")
