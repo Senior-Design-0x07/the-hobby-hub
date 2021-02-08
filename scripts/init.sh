@@ -22,7 +22,7 @@ sudo cp -r files/system/commands/ /etc/hobby-hub/
 
 # Create dev user & group. add new user to required groups.
 sudo useradd --comment "Development User" --user-group --create-home --shell /bin/bash dev
-sudo usermod --append --groups dev debian 
+sudo usermod --append --groups dev debian
 sudo usermod --append --groups dialout,users,systemd-journal,bluetooth,i2c,gpio,pwm,spi,iio dev
 sleep 1
 echo 'dev:dev' | sudo chpasswd
@@ -36,3 +36,4 @@ sudo cp files/system/issue.net /etc/
 echo "{}" | sudo tee -a /etc/hobby-hub/pin_mapping.json # creates empty, but valid JSON file
 chmod og=rw /etc/hobby-hub/pin_mapping.json
 cp files/src/pin_manager.py /etc/hobby-hub/ # pin manager itself
+python3 -m pip install /home/debian/the-hobby-hub/files/src/hobby_hub_utils # install package for user dev
