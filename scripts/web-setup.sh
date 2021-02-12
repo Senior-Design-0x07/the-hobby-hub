@@ -22,7 +22,8 @@ rm /etc/apt/sources.list.d/sources.list
 # #Create sources list with stretch-backports
 # cd /etc/apt/sources.list.days
 
-
 #Copy directory to our folder on board
 cp -r files/web /etc/hobby-hub/
+
+echo "Web server installed!"
 

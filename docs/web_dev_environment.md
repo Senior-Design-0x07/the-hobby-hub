@@ -25,7 +25,7 @@ is a viable option as well, but I want everything in one IDE. Your choice though
 flutter bin file(mine is ```C:\flutter\bin```)
 5. Open CMD, type in 'flutter' to verify if it is in the PATH correctly
 **Flutter Web Config**(ref: [Link](https://flutter.dev/docs/get-started/web) )
-6. Run: 'flutter channel beta', then 'flutter upgrade', and 'flutter config --enable-web'
+6. Run: ```flutter channel beta```, then ```flutter upgrade```, and ```flutter config --enable-web```
 (Let me know if this works for you guys)
 
 ## Setup Android Studio
@@ -37,7 +37,7 @@ flutter bin file(mine is ```C:\flutter\bin```)
 and open with android studio to setup virtual devices.
 (Watch Video for the parts below if stuck)
 2. Click ```Tools -> AVD Manager``` and create a new virtual device
-3. We will use the ```Pixel 3a XL``` to test code for Android Devices, ```Release Q```, and ```Hardware Graphics - GLES 2.0```
+3. We will use the ```Pixel 3a XL``` to test code for Android Devices, download ```Release Oreo``` for http and ```Release Q``` eventually for https, and select ```Hardware Graphics - GLES 2.0``` for both.
 4. Click the play button from the AVD manager to verify it works
 5. On main Android Studio screen, a yellow header is there with the words: 'install dependencies' Click it.
 6. After that click and Android Studio reboots, in bottom left click 'configure plugins' and install it.
@@ -46,9 +46,12 @@ the ```Google USB Driver```
 8. Run cmd: ```flutter doctor``` to verify everything is working
 
 ## Run Project on Emulator(Mobile)
-1. Click Green Play button on Android Studio while phone emulator is open to run our project on the emulator. It will take some
+- > For Android Studio, click green play button while phone emulator is selected to run project on the emulator. It will take some
 time the first time project is building. 
-*All this is doing is running the command ```flutter run``` in the top-directory of project. Will use this if using VS Code
+*All this is doing is running the command ```flutter run``` in the top-directory of project.*
+- > For VS Code, towards bottom left you might see Chrome, click that to change which emulator to run it on by clicking the 'Pixel 3a
+emulator'. Click 'Run without debugging' from VS Code towards the top right of the VS Code to run project.
+
 ## Run Project on Website
 1. **ONLY WORKS** by this...cd to project directory and run: ```flutter run -d chrome --release```
 
@@ -57,9 +60,11 @@ time the first time project is building.
 2. Search for 'flutter' and install that extension
 3. Open cmd prompt by pressing ```CTRL + ` ```
 4. Run command: ```flutter devices``` to see the hiearchy.
-4a. To develop with mobile app, open Android Studio AVD Manager and open the phone emulator before performing
+   
+   a. To develop with mobile app, open Android Studio AVD Manager and open the phone emulator before performing
 the ```flutter run``` command so that it will delegate to the phone emulator rather than chrome.
-4b. Run command :```flutter run -d chrome --version``` to develop for website.
+   
+   b. Run command :```flutter run -d chrome --version``` to develop for website.
 
 #Tips when developing with Flutter
 1. Always have flutter 'running' when developing our UI because the full build/rebuilding process takes a long time.
