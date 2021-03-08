@@ -10,6 +10,13 @@ REBOOT=1
 # flag to display help menu
 HELP=0
 
+# first ensure script is run as root...
+if [ "$EUID" -ne 0 ]
+  then echo "Please run as root"
+  exit
+fi
+
+
 for arg do
 
   if [ $arg = "fast" ]

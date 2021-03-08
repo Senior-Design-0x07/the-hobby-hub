@@ -8,8 +8,17 @@ cp files/init/start.sh /etc/hobby-hub/
 
 # Program manager
 mkdir -p /etc/hobby-hub/out/ # contains output of program manager
+sudo chmod 777 /etc/hobby-hub/out/
+touch /etc/hobby-hub/out/paused_programs.txt
+chmod 777 /etc/hobby-hub/out/paused_programs.txt
+touch /etc/hobby-hub/out/running_programs.txt
+chmod 777 /etc/hobby-hub/out/running_programs.txt
 cp files/src/program_manager.py /etc/hobby-hub/ # program manager itself
 
+# Hobby-hub command line utilitiy
+cp files/src/hobby-hub /usr/bin/
+sudo cp files/system/sudoers /etc/
+sudo cp -r files/system/commands/ /etc/hobby-hub/
 
 # Create dev user & group. add new user to required groups.
 sudo useradd --comment "Development User" --user-group --create-home --shell /bin/bash dev
