@@ -5,6 +5,11 @@
 ## Rev: 0.1
 ## Description: Provides interfacing commands for the user that manipulate the running programs 
 
+# Global Directories
+
+RUNNING_PROGRAMS="/etc/hobby-hub/out/running_programs.txt"
+PAUSED_PROGRAMS="/etc/hobby-hub/out/paused_programs.txt"
+PROGRAMS_DIR="/etc/hobby-hub/test_programs/"
 
 ## OPTIONS PROVIDED ##
 ## 0 = not provided ##
@@ -66,6 +71,7 @@ do
             if [ -z "$2" ]
             then
                 TRANSFER=2
+                # No filename provided. Error
                 shift # Remove argument name from processing
             else
                 TRANSFER_FILE="$2"
@@ -127,10 +133,6 @@ do
 done
 
 #---------------------------------------------------------------------------------------------------------#
-
-
-RUNNING_PROGRAMS="/etc/hobby-hub/out/running_programs.txt"
-PAUSED_PROGRAMS="/etc/hobby-hub/out/paused_programs.txt"
 
 
 if [ $HELP -eq 1 ]
@@ -266,5 +268,106 @@ else
             echo "$line" >> "$RUNNING_PROGRAMS"
         done < "$PAUSED_PROGRAMS"
         truncate -s 0 $PAUSED_PROGRAMS
+    fi
+   ####################  TRANSFER  ####################
+
+    if [ $TRANSFER -eq 1 ]
+    then
+        if [[ $TRANSFER_FILE == *.py  ||  $TRANSFER_FILE == *.c ||  $TRANSFER_FILE == *.cpp ]]
+        then
+            # we don't actually need to be sudo to execute. circumvented by visudo
+            sudo /etc/hobby-hub/commands/move_process.sh $TRANSFER_FILE
+            sudo /etc/hobby-hub/commands/start_process.sh $TRANSFER_FILE
+        else
+            echo 'unsupported file type for transfer. required *.c , *.cpp , *.py'
+        fi
+    elif [ $TRANSFER -eq 2 ]
+    then
+        echo 'no file to transfer specified. unable to transfer'
+    fi
+
+   ####################  REMOVE  ####################
+
+    if [ $REMOVE -eq 1 ]
+    then
+        FOUND=0
+        LINE=1
+        while read -r line
+        do
+            IFS=' '
+            ARG=1
+            read -a strarr <<< "$line"
+            for word in "${strarr[@]}"
+            do
+                if [ $ARG -eq 1 ]
+                then
+                    b=$(basename $word)
+                    if [[ $b == $REMOVE_FILE  || $b == "${REMOVE_FILE}.c" || $b == "${REMOVE_FILE}.cpp" ]]
+                    then
+                        FOUND=1
+                    fi
+                fi
+                if [ $ARG -eq 2 ]
+                then
+                    if [ $FOUND -eq 1 ]
+                    then
+                        # we don't actually need to be sudo to execute. circumvented by visudo
+                        sudo /etc/hobby-hub/commands/kill_process.sh $word
+                    fi
+                fi
+                ARG=2
+            done
+            if [ $FOUND -eq 0 ]
+            then
+                ((LINE=LINE+1))
+            fi
+        done < "$RUNNING_PROGRAMS"
+        if [ $FOUND -eq 1 ]
+        then
+            # remove the line from the file
+            sed -i "${LINE}d" .$RUNNING_PROGRAMS
+        fi
+
+        FOUND=0
+        LINE=1
+        while read -r line
+        do
+            IFS=' '
+            ARG=1
+            read -a strarr <<< "$line"
+            for word in "${strarr[@]}"
+            do
+                if [ $ARG -eq 1 ]
+                then
+                    b=$(basename $word)
+                    if [[ $b == $REMOVE_FILE  || $b == "${REMOVE_FILE}.c" || $b == "${REMOVE_FILE}.cpp" ]]
+                    then
+                        FOUND=1
+                    fi
+                fi
+                if [ $ARG -eq 2 ]
+                then
+                    if [ $FOUND -eq 1 ]
+                    then
+                        # we don't actually need to be sudo to execute. circumvented by visudo
+                        sudo /etc/hobby-hub/commands/kill_process.sh $word
+                    fi
+                fi
+                ARG=2
+            done
+            if [ $FOUND -eq 0 ]
+            then
+                ((LINE=LINE+1))
+            fi
+        done < "$PAUSED_PROGRAMS"
+        if [ $FOUND -eq 1 ]
+        then
+            # remove the line from the file
+            sed -i "${LINE}d" .$PAUSED_PROGRAMS
+        fi
+
+    elif [ $REMOVE -eq 2 ]
+    then
+        echo 'no provided file to remove specified. unable to remove'
     fi
 fi
