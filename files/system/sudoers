@@ -26,6 +26,9 @@ root	ALL=(ALL:ALL) ALL
 dev ALL=(ALL) NOPASSWD: /etc/hobby-hub/commands/kill_process.sh
 dev ALL=(ALL) NOPASSWD: /etc/hobby-hub/commands/pause_process.sh
 dev ALL=(ALL) NOPASSWD: /etc/hobby-hub/commands/resume_process.sh
+dev ALL=(ALL) NOPASSWD: /etc/hobby-hub/commands/move_process.sh
+dev ALL=(ALL) NOPASSWD: /etc/hobby-hub/commands/remove_process.sh
+dev ALL=(ALL) NOPASSWD: /etc/hobby-hub/commands/start_process.sh
 
 # See sudoers(5) for more information on "#include" directives:
 
