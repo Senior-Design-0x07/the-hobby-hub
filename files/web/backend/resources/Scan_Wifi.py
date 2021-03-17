@@ -5,7 +5,8 @@ class Scan_Wifi(Resource):
     def get(self):
         # subprocess.run([sys.executable, "/~/the-hobby-hub/scripts/scan_network.sh"])
 
-        f = open("/home/debian/the-hobby-hub/files/wifi_scan/SSID.json", "r")
+        # ONLY USED THIS FOR QUARTER 2 DEMO PURPOSES. THIS FILE PATH IS NOT GOOD :)
+        # f = open("/home/debian/the-hobby-hub/files/wifi_scan/SSID.json", "r")
         scanned_networks = json.load(f)
         f.close()
         return scanned_networks

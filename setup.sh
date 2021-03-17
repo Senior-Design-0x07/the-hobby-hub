@@ -1,7 +1,7 @@
 #/bin/sh
 
-# Author : 
-# Description :
+# Author : Draven Schilling
+# Description : Runs all scripts needed to setup board on boot
 
 # flag to denote if you want fast setup
 FAST=0
