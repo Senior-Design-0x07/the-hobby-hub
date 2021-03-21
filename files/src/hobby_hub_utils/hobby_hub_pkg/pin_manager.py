@@ -5,9 +5,10 @@ import json
 import argparse
 import logging
 
-from pin import Pin_t, Pin, Led
+from .pin import Pin_t, Pin, Led
 
 PIN_MAP_FILE = "/etc/hobby-hub/pin_mapping.json"
+PIN_MANAGER_LOGGING_FILE = '/etc/hobby-hub/logs/pin_manager.log'
 
 # Table generated based on https://github.com/jadonk/bonescript/blob/master/src/bone.js
 # (Adafruit_BBIO_NAME, Pin_Number)
@@ -124,15 +125,19 @@ def main(arguments):
         arguments (list): list of arguments
     """
 
-    logging.basicConfig(level=logging.INFO, )
+    logging.basicConfig(level=logging.INFO, filename=PIN_MANAGER_LOGGING_FILE)
 
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('pin_config_filename',
                         help="JSON file containing the pin mapping file")
 
     parser.add_argument('-r', '--request-pin',
-                        metavar='TAG',
-                        help="Adds this tag to the pin mapping file")
+                        metavar=('TAG', 'TYPE'),
+                        help="Adds this tag of specified type to the pin mapping file")
+
+    parser.add_argument('-u', '--update-pin',
+                        metavar=('TAG', 'PIN'),
+                        help="Updates this tag to use the specified pin")
 
     parser.add_argument('-g', '--get-pin',
                      metavar='TAG',
@@ -151,7 +156,12 @@ def main(arguments):
     logging.info(f'JSON file is {args.pin_config_filename}')
 
     if args.request_pin:
-        request_pin(args.pin_config_filename, args.request_pin)
+        tag, typ = args.update_pin
+        request_pin(tag, typ)
+
+    if args.update_pin:
+        tag, pin = args.update_pin
+        update_pin(args.pin_config_filename, tag, pin)
 
     if args.get_pin:
         value = get_pin(args.pin_config_filename, args.get_pin)
@@ -167,30 +177,35 @@ def main(arguments):
         clear_unused(args.pin_config_filename)
 
 
-def request_pin(pin_config_filename, tag):
-    """Adds the tag to the mapping file as a key-value pair
+def update_pin(pin_config_filename, tag, pin):
+    """Updates this tag to use the specified pin
 
-    The value (actual pin) will be dynamically changed by the web UI,
-    so a placeholder value is added.
-
-    If the tag already exists, there is no change.
+    This method has no effect if the tag is not already managed or if the new pin is a different
+    type.
 
     Args:
-        tag (str): the tag to be the key in the config file
+        tag (str): tag to update
+        pin (str): new physical pin id
     """
-    logging.info(f'Requesting pin {tag}')
+    logging.info(f'Updating pin {tag}')
     with open(pin_config_filename, 'r+') as f:
         pin_config = json.load(f)
-        if tag in pin_config:
-            logging.info(f'{tag} already in JSON file')
-        else:
-            pin_config[tag] = {}
-            pin_config[tag]["pin"] = "P0"
-            pin_config[tag]["in_use"] = False
-            f.seek(0) # should reset file position to the beginning.
-            json.dump(pin_config, f, indent=4)
-            f.truncate() # remove remaining part
-            logging.info(f'{tag} added to JSON with placeholder')
+        if tag not in pin_config:
+            logging.info(f'Pin {tag} not found - not updating')
+            return
+        for pin in pin_table:
+            if pin[0] == pin:
+                if pin[2] != pin_config[tag]['type']:
+                    logging.info(f'Pin {tag} is a different type - not updating')
+                else:
+                    pin_config[tag]['pin'] = pin
+                    f.seek(0) # should reset file position to the beginning.
+                    json.dump(pin_config, f, indent=4)
+                    f.truncate() # remove remaining part
+                    logging.info(f'Pin {tag} updated to use {pin}')
+                    return
+
+    logging.info(f'{pin} is not a valid pin')
 
 
 def get_pin(pin_config_filename, tag):
@@ -244,15 +259,12 @@ def clear_unused(pin_config_filename):
         logging.info('All unused pins cleared')
 
 
-if __name__ == '__main__':
-    sys.exit(main(sys.argv[1:]))
-
-def _get_pin(tag, type):
+def request_pin(tag, typ):
     with open(PIN_MAP_FILE, 'r+') as f:
         pin_config = json.load(f)
         physical_pin = ""
         if tag in pin_config:
-            if pin_config[tag]["type"] == type:
+            if pin_config[tag]["type"] == typ:
                 physical_pin = pin_config[tag]["pin"]
             else:
                 raise KeyError("Requested pin " + tag + " of type: " + type + " already found as type: " + pin_config[tag]["type"])
@@ -261,10 +273,10 @@ def _get_pin(tag, type):
             for config in pin_config.values():
                 used_pins.append(config["pin"])
             for pin in pin_table:
-                if (pin[0] not in used_pins) and (pin[2] == type):
+                if (pin[0] not in used_pins) and (pin[2] == typ):
                     pin_config[tag] = {}
                     pin_config[tag]["pin"] = pin[0]
-                    pin_config[tag]["type" ] = type
+                    pin_config[tag]["type" ] = typ
                     physical_pin = pin[0]
                     break
             f.seek(0) # should reset file position to the beginning.
@@ -276,8 +288,12 @@ def _get_pin(tag, type):
 
 
 def get_gpio(tag):
-    return Pin(_get_pin(tag, Pin_t.GPIO))
+    return Pin(request_pin(tag, Pin_t.GPIO))
+
 
 def get_led(tag):
-    return Led(_get_pin(tag, Pin_t.SPECIAL))
+    return Led(request_pin(tag, Pin_t.SPECIAL))
 
+
+if __name__ == '__main__':
+    sys.exit(main(sys.argv[1:]))
