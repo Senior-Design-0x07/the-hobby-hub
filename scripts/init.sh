@@ -11,9 +11,12 @@ mkdir -p /etc/hobby-hub/out/ # contains output of program manager
 
 touch /etc/hobby-hub/out/paused_programs.txt
 touch /etc/hobby-hub/out/running_programs.txt
+touch /etc/hobby-hub/out/debug_config.txt
 sudo chmod 777 /etc/hobby-hub/out/
 sudo chmod 777 /etc/hobby-hub/out/paused_programs.txt
 sudo chmod 777 /etc/hobby-hub/out/running_programs.txt
+sudo chmod 777 /etc/hobby-hub/out/debug_config.txt
+
 cp files/src/program_manager.py /etc/hobby-hub/ # program manager itself
 
 # Hobby-hub command line utilitiy
@@ -27,6 +30,9 @@ sudo chmod 777 /etc/hobby-hub/commands/pause_process.sh
 sudo chmod 777 /etc/hobby-hub/commands/remove_process.sh
 sudo chmod 777 /etc/hobby-hub/commands/resume_process.sh
 sudo chmod 777 /etc/hobby-hub/commands/start_process.sh
+sudo chmod 777 /etc/hobby-hub/commands/remove_file.sh
+sudo chmod 777 /etc/hobby-hub/commands/start_program_manager.sh
+sudo chmod 777 /etc/hobby-hub/commands/start_debug.sh
 
 # Create dev user & group. add new user to required groups.
 sudo useradd --comment "Development User" --user-group --create-home --shell /bin/bash dev
