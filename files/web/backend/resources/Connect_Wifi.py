@@ -3,6 +3,7 @@ from flask_restful import Resource
 class Connect_Wifi(Resource):
     def get(self):
         # subprocess.run([sys.executable, "/~/the-hobby-hub/scripts/scan_network.sh"])
+        return 0
 
     
     def post(self):

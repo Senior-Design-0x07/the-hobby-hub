@@ -1,8 +1,9 @@
 from flask_restful import Resource
+import subprocess
 
 class Scan_Wifi(Resource):
     def get(self):
-        # subprocess.run([sys.executable, "/~/the-hobby-hub/scripts/scan_network.sh"])
+        subprocess.run("/home/debian/the-hobby-hub/scripts/scan_network.sh")
 
         f = open("/home/debian/the-hobby-hub/files/wifi_scan/SSID.txt")
 
