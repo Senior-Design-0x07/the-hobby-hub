@@ -1,9 +1,0 @@
-	SSID: Villager38
-	SSID: MySpectrumWiFi60-2G
-	SSID: ATT7zRt4s5
-	SSID: Astor? I barely know her
-	SSID: Astor? I barely know her-guest
-	SSID: NSA-LINK
-	SSID: MySpectrumWiFie2-2G
-	SSID: MySpectrumWiFie2-2G_EXT
-	SSID: MySpectrumWiFi78-2G
