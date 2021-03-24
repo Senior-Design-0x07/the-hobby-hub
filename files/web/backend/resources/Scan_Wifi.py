@@ -5,9 +5,10 @@ class Scan_Wifi(Resource):
     def get(self):
         subprocess.run("/home/debian/the-hobby-hub/scripts/scan_network.sh")
 
-        f = open("/home/debian/the-hobby-hub/files/wifi_scan/SSID.txt")
+        f = open("/home/debian/the-hobby-hub/files/wifi_scan/SSID.txt", "r")
 
         scanned_networks = f.readlines()
+
         f.close()
         return scanned_networks
     

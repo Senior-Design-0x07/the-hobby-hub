@@ -1,12 +1,8 @@
 	SSID: ATTyzfdn6a24
 	SSID: 550Clubroom
-	SSID: ATTKVADsKI
-	SSID: ATTmSjEf5S
+	SSID: ATTcpZuqNa
 	SSID: ATTnYgEgmS
-	SSID: ATTRBukYs2
 	SSID: ATT2jUj2VS
 	SSID: NETGEAR38
-	SSID: For Fun, Click Here
-	SSID: ATTIQB7Pi2
-	SSID: ATTcpZuqNa
-	SSID: atheoryof.us
+	SSID: ATTKVADsKI
+
