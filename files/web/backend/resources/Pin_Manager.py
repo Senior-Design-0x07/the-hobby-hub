@@ -4,12 +4,10 @@ import subprocess, sys
 
 class Pin_Manager(Resource):
     def get(self, cmd):
-        print(cmd)
         if(cmd == 'grab_used_pins'):
             f = open("/etc/hobby-hub/pin_mapping.json", "r")
             pin_mapping = json.load(f)
             f.close()
-            print(type(pin_mapping))
             return pin_mapping
         elif(cmd == 'reset_config'):
             subprocess.call(['sudo','python3','/etc/hobby-hub/pin_manager.py','-x','/etc/hobby-hub/pin_mapping.json'])
