@@ -14,19 +14,20 @@ from subprocess import Popen, PIPE
 class Edit_Pin(Resource):
 
     def get(self, cmd, pin_name):
-        if(cmd == 'get_pin'):
+        if(cmd == 'request_pin'):
+            cmdResult = subprocess.Popen(['sudo','python3','/etc/hobby-hub/pin_manager.py', '-r', pin_name, '/etc/hobby-hub/pin_mapping.json'], stdout=subprocess.PIPE)
+            tuple1 = cmdResult.communicate()[0]
+            string_dict = tuple1.decode("utf-8")
+            print(string_dict)
+            return 'true' if True else False
+        elif(cmd == 'get_pin'):
             cmdResult = subprocess.Popen(['sudo','python3','/etc/hobby-hub/pin_manager.py', '-g', pin_name, '/etc/hobby-hub/pin_mapping.json'], stdout=subprocess.PIPE)
             tuple1 = cmdResult.communicate()[0]
             string_dict = tuple1.decode("utf-8")\
                                 .replace('\'','\"')\
                                 .replace('T','t')\
                                 .split(" ", 6)[6]
+            print(string_dict)
             #Convert dictionary string to dictionary
             pin = json.loads(string_dict)
             return pin
-        elif(cmd == 'request_pin'):
-            cmdResult = subprocess.Popen(['sudo','python3','/etc/hobby-hub/pin_manager.py', '-r', pin_name, '/etc/hobby-hub/pin_mapping.json'], stdout=subprocess.PIPE)
-            tuple1 = cmdResult.communicate()[0]
-            string_dict = tuple1.decode("utf-8")
-            print(string_dict)
-            return 'true' if True else False
