@@ -9,11 +9,11 @@ class Pin_Manager(Resource):
             pin_mapping = json.load(f)
             f.close()
             return pin_mapping
+        elif(cmd == 'clear_unused'):
+            subprocess.call(['sudo','python3','/etc/hobby-hub/pin_manager.py','-c','/etc/hobby-hub/pin_mapping.json'])
+            print('Cleared')
+            return 'false' if True else False 
         elif(cmd == 'reset_config'):
             subprocess.call(['sudo','python3','/etc/hobby-hub/pin_manager.py','-x','/etc/hobby-hub/pin_mapping.json'])
             print('Reset')
-            return None
-        elif(cmd == 'clear_unused'):
-            subprocess.call(['python3','/etc/hobby-hub/pin_manager.py','-x','/etc/hobby-hub/pin_mapping.json'])
-            print('Cleared')
-            return None        
+            return 'true' if True else False       
