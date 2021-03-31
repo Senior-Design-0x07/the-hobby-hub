@@ -4,7 +4,7 @@
 # act as an entry point to startup the rest of the hobby-hub utilities (as needed).
 
 # Start program manager
-sudo python3 /etc/hobby-hub/program_manager.py /home/dev/myprograms/ > /etc/hobby-hub/out/running_programs.txt
+sudo python3 /etc/hobby-hub/program_manager.py /etc/hobby-hub/test_programs/ > /etc/hobby-hub/out/running_programs.txt
 
 #Runs Flask Backend Server on startup
 echo " || Starting Web Server ||"
