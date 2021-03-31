@@ -1,0 +1,8 @@
+README.md
+setup.py
+hobby_hub_pkg/__init__.py
+hobby_hub_pkg/pin_manager.py
+hobby_hub_pkg.egg-info/PKG-INFO
+hobby_hub_pkg.egg-info/SOURCES.txt
+hobby_hub_pkg.egg-info/dependency_links.txt
+hobby_hub_pkg.egg-info/top_level.txt
