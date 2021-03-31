@@ -1,0 +1,18 @@
+Metadata-Version: 2.1
+Name: hobby-hub-pkg
+Version: 0.0.2
+Summary: Hobby Hub utility package. Developed for BeagleBone Green
+Home-page: https://github.com/Senior-Design-0x07/the-hobby-hub
+Author: Rock, Draven, Anthony, Declan, Andy
+Author-email: schillingdl@msoe.edu
+License: UNKNOWN
+Description: # USAGE
+        
+        see setup and usage guide: https://github.com/Senior-Design-0x07/the-hobby-hub
+        
+Platform: UNKNOWN
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.6
+Description-Content-Type: text/markdown

@@ -7,6 +7,10 @@
 
 echo "Installing web server."
 
+rm -r /etc/hobby-hub/web/backend/__pycache__
+rm -r /etc/hobby-hub/web/backend/resources/__pycache__
+rm /etc/apt/sources.list.d/sources.list
+
 #Copy directory to our folder on board
 cp -r files/web /etc/hobby-hub/
 
