@@ -10,6 +10,9 @@ cp files/init/start.sh /etc/hobby-hub/
 mkdir -p /etc/hobby-hub/out/ # contains output of program manager
 cp files/src/program_manager.py /etc/hobby-hub/ # program manager itself
 
+# Wifi dependencies
+cp -R files/wifi_scan /etc/hobby-hub/
+
 
 # Create dev user & group. add new user to required groups.
 sudo useradd --comment "Development User" --user-group --create-home --shell /bin/bash dev
