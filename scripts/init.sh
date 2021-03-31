@@ -21,6 +21,7 @@ cp files/src/program_manager.py /etc/hobby-hub/ # program manager itself
 
 # Hobby-hub command line utilitiy
 cp files/src/hobby-hub /usr/bin/
+sudo chmod 777 /usr/bin/hobby-hub
 sudo cp files/system/sudoers /etc/
 sudo cp -r files/system/commands/ /etc/hobby-hub/
 sudo chmod 777 /etc/hobby-hub/commands/
