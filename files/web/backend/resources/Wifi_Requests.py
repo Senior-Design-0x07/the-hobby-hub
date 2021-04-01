@@ -10,12 +10,17 @@ parser.add_argument("password", type=str, help="Task is required BRO.", required
 class Wifi_Requests(Resource):
     def get(self):
         os.system("sudo /sbin/iw wlan0 scan | grep SSID > /etc/hobby-hub/wifi_scan/SSID.txt")
+        scanned_networks = []
+        parsed_networks = []
 
         f = open("/etc/hobby-hub/wifi_scan/SSID.txt", "r")
         scanned_networks = f.readlines()
         f.close()
 
-        return scanned_networks
+        for line in scanned_networks:
+            parsed_networks.append(line.strip())
+
+        return parsed_networks
     
     def post(self):
         args = parser.parse_args()
