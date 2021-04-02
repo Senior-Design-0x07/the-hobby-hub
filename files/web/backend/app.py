@@ -5,6 +5,7 @@ from flask_cors import CORS
 from resources.Example import Example
 from resources.Pin_Manager import Pin_Manager
 from resources.Program_Manager import Program_Manager
+from resources.Program_Command import Program_Command
 from resources.Scan_Wifi import Scan_Wifi
 
 api_bp = Blueprint('api', __name__)
@@ -14,5 +15,6 @@ CORS(api_bp)
 # Route
 api.add_resource(Example, '/Example')
 api.add_resource(Pin_Manager, '/pin_manager')
-api.add_resource(Program_Manager, '/program_manager')
+api.add_resource(Program_Manager, '/program_manager/<string:program_list>')
+api.add_resource(Program_Command, '/program_command/<string:cmd>/<string:program_name>')
 api.add_resource(Scan_Wifi, '/scan_wifi')

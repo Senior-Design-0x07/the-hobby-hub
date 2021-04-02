@@ -1,25 +1,32 @@
-from flask_restful import Resource, reqparse
-
-parser = reqparse.RequestParser()
-parser.add_argument("program_name", type=str, help="Program name required", required=True)
+from flask_restful import Resource
 
 class Program_Manager(Resource):
-    def get(self):
-        # obtain list of running programs from text file
-        running_programs = ""
-        with open("/etc/hobby-hub/out/running_programs.txt", "r") as f:
-            running_programs = f.read()
-            f.close()
-        return running_programs
-    
-    # take program name as argument for program manager commands from frontend
-    def post(self):
-        args = parser.parse_args()
+    # Program Manager - Retrieve Running/Pause Programs Lists
+    def get(self, program_list):
+        if(program_list == 'running_programs'):
+            # obtain list of running programs from text file
+            running_programs_raw = []
+            running_programs_list = []
+            with open("/etc/hobby-hub/out/running_programs.txt", "r") as f:
+                # parse list into individual lines
+                running_programs_raw = f.readLines()
+                f.close()
 
-        print("REQUEST: ")
-        print("   Program Name: " + args["program_name"])
+                for line in running_programs_raw:
+                    running_programs_list.append(line.strip())
 
-        # invoke program manager command (pause a running program)
-        # subprocess.run("/home/debian/the-hobby-hub/files/system/commands/pause_process.sh", args["program_name"])
-        os.command("sudo hobby-hub -p " + args["program_name"])
-        return None
+            return running_programs_list
+
+        elif(program_list == 'paused_programs'):
+            # obtain list of paused programs from text file
+            paused_programs_raw = []
+            paused_programs_list = []
+            with open("/etc/hobby-hub/out/paused_programs.txt", "r") as f:
+                # parse list into individual lines
+                paused_programs_raw = f.readLines()
+                f.close()
+
+                for line in paused_programs_raw:
+                    paused_programs_list.append(line.strip())
+
+            return paused_programs_list
