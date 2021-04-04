@@ -1,20 +1,26 @@
-from flask_restful import Resource
+from flask_restful import Resource, reqparse
+import os
+
+parser = reqparse.RequestParser()
+parser.add_argument("command", type=str, required=True)
+parser.add_argument("program", type=str, required=True)
 
 class Program_Command(Resource):
-    # Program Manager - Commands (Pause, Continue, Stop, Start)
-    def get(self, cmd, program_name):
-        if(cmd == 'pause_program'):
+    # Program Manager - Program Commands
+    def post(self):
+        args = parser.parse_args()
+        if(args["command"] == 'pause_program'):
             # pause the supplied program (provided program is running)
-            os.command("sudo hobby-hub -p " + program_name)
+            os.system("sudo hobby-hub -p " + args["program"])
 
-        elif(cmd == 'continue_program'):
+        elif(args["command"] == 'continue_program'):
             # continue the supplied program (provided program is paused)
-            os.command("sudo hobby-hub -c " + program_name)
+            os.system("sudo hobby-hub -c " + args["program"])
 
-        elif(cmd == 'stop_program'):
+        elif(args["command"] == 'stop_program'):
             # stop the supplied program completely (provided program is running)
-            os.command("sudo hobby-hub -s " + program_name)
+            os.system("sudo hobby-hub -s " + args["program"])
 
-        elif(cmd == 'start_program'):
+        elif(args["command"] == 'start_program'):
             # start the supplied program
-            os.command("sudo hobby-hub -t " + program_name)
+            os.system("sudo hobby-hub -t " + args["program"])

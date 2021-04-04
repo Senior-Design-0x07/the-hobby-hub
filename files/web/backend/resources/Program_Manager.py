@@ -9,12 +9,12 @@ class Program_Manager(Resource):
             running_programs_list = []
             with open("/etc/hobby-hub/out/running_programs.txt", "r") as f:
                 # parse list into individual lines
-                running_programs_raw = f.readLines()
+                running_programs_raw = f.readlines()
                 f.close()
 
                 for line in running_programs_raw:
-                    running_programs_list.append(line.strip())
-
+                    running_programs_list.append(line.strip())                    
+                
             return running_programs_list
 
         elif(program_list == 'paused_programs'):
@@ -23,7 +23,7 @@ class Program_Manager(Resource):
             paused_programs_list = []
             with open("/etc/hobby-hub/out/paused_programs.txt", "r") as f:
                 # parse list into individual lines
-                paused_programs_raw = f.readLines()
+                paused_programs_raw = f.readlines()
                 f.close()
 
                 for line in paused_programs_raw:
