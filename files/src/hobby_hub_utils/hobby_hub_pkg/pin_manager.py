@@ -288,10 +288,28 @@ def request_pin(tag, typ):
 
 
 def get_gpio(tag):
+    """
+    Get a GPIO object for the pin. Sets up the GPIO pin and allows for setting the pin high and low.
+
+    Args:
+        tag (str): tag of GPIO pin - created if not already in pin config
+
+    Returns:
+        str: `Pin` object
+    """
     return Pin(request_pin(tag, Pin_t.GPIO))
 
 
 def get_led(tag):
+    """
+    Get a LED object for the pin. Sets up the LED and allows for turning it on and off.
+
+    Args:
+        tag (str): tag of LED pin - created if not already in pin config
+
+    Returns:
+        str: `LED` object
+    """
     return Led(request_pin(tag, Pin_t.SPECIAL))
 
 
