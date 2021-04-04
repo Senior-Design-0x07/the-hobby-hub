@@ -52,3 +52,7 @@ echo "{}" | sudo tee -a /etc/hobby-hub/pin_mapping.json # creates empty, but val
 chmod og=rw /etc/hobby-hub/pin_mapping.json
 cp files/src/pin_manager.py /etc/hobby-hub/ # pin manager itself
 sudo python3 -m pip install /home/debian/the-hobby-hub/files/src/hobby_hub_utils # install package for user dev
+
+#Log
+sudo touch /etc/hobby-hub/log.txt
+
