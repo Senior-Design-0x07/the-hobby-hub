@@ -1,0 +1,630 @@
+#!/bin/bash
+
+## Author: Draven Schilling
+## Publication Date: 1-25-21
+## Rev: 0.1
+## Description: Provides interfacing commands for the user that manipulate the running programs 
+
+# Global Directories
+
+RUNNING_PROGRAMS="/etc/hobby-hub/out/running_programs.txt"
+PAUSED_PROGRAMS="/etc/hobby-hub/out/paused_programs.txt"
+DEBUG_PROGRAM="/etc/hobby-hub/out/debug_config.txt"
+PROGRAMS_DIR="/etc/hobby-hub/test_programs/"
+
+## OPTIONS PROVIDED ##
+## 0 = not provided ##
+##   1 = provided   ##
+##     2 = error    ##
+
+HELP=0
+
+RESTART=0
+STOP=0
+PAUSE=0
+CONTINUE=0
+
+LIST=0
+TRANSFER=0
+TRANSFER_FILE=""
+DEBUG=0
+DEBUG_FILE=""
+DBGRESUME=0
+REMOVE=0
+REMOVE_FILE=""
+MODIFY_FILE=""
+
+DEBUG_STATUS= $([ -s /etc/hobby-hub/out/debug_config.txt ])
+
+
+OTHER_ARGUMENTS=()
+
+if [ $# -eq 0 ]
+then
+    HELP=1
+fi
+
+# Loop through arguments and process them
+for arg in "$@"
+do
+    case $arg in
+        -h|--help) # Display Help Menu
+        HELP=1
+        shift # Remove from processing
+        ;;
+        -r|--restart) # Restart Running processes
+        RESTART=1
+        shift # Remove from processing
+        ;;
+        -s|--stop) # Stop Running processes
+        STOP=1
+        shift # Remove from processing
+        ;;
+        -p|--pause) # Pause Running processes
+
+        if [ -z "$2" ]
+        then
+            #just pause everything
+            PAUSE=1
+            shift # Remove argument name from processing
+        else
+            MODIFY_FILE="$2"
+            if [ -f /etc/hobby-hub/test_programs/$MODIFY_FILE ]
+            then
+                PAUSE=2
+            else
+                PAUSE=1
+            fi
+            shift # Remove argument name from processing
+            shift # Remove argument value from processing
+        fi
+        ;;
+        -c|--continue) # Resume Running processes
+        if [ -z "$2" ]
+        then
+            #just continue everything
+            CONTINUE=1
+            shift # Remove argument name from processing
+        else
+            MODIFY_FILE="$2"
+            if [ -f /etc/hobby-hub/test_programs/$MODIFY_FILE ]
+            then
+                CONTINUE=2
+            else
+                CONTINUE=1
+            fi
+            shift # Remove argument name from processing
+            shift # Remove argument value from processing
+        fi
+        ;;
+        -l|--list) # List Running processes
+        LIST=1
+        shift # Remove from processing
+        ;;
+        -t|--transfer) # move file to running processes
+            if [ -z "$2" ]
+            then
+                TRANSFER=2
+                # No filename provided. Error
+                shift # Remove argument name from processing
+            else
+                TRANSFER_FILE="$2"
+                if [ -f $TRANSFER_FILE ]
+                then
+                    TRANSFER=1
+                else
+                    TRANSFER=2
+                fi
+                shift # Remove argument name from processing
+                shift # Remove argument value from processing
+            fi
+        ;;
+        -z|--remove) # Remove program
+        if [ -z "$2" ]
+            then
+                REMOVE=2
+                echo nope
+                shift # Remove argument name from processing
+            else
+                
+                REMOVE_FILE="$2"
+                if [ -f /etc/hobby-hub/test_programs/$REMOVE_FILE ]
+                then
+                    REMOVE=1
+                else
+                    REMOVE=2
+                fi
+                shift # Remove argument name from processing
+                shift # Remove argument value from processing
+            fi
+        ;;
+        -d|--debug) # Debug provided program
+            if [ -z "$2" ]
+            then
+                DEBUG=2
+                shift # Remove argument name from processing
+            else
+                DEBUG_FILE="$2"
+                if [ -f $DEBUG_FILE ]
+                then
+                    DEBUG=1
+                else
+                    DEBUG=2
+                fi
+                shift # Remove argument name from processing
+                shift # Remove argument value from processing
+            fi
+        ;;
+        -dr|--dbgResume) # resume's from debug state
+        DBGRESUME=1
+        shift
+        ;;
+        *)
+        OTHER_ARGUMENTS+=("$1")
+        HELP=1
+        shift # Remove generic argument from processing
+        ;;
+    esac
+
+    break # don't allow more than one argument. for the time being...
+
+done
+
+#---------------------------------------------------------------------------------------------------------#
+
+
+if [ $HELP -eq 1 ]
+then
+    echo options:
+    echo "[-h|--help]                        usage instructions. Help output."
+    echo "[-r|--restart]                     restarts the currently running programs."
+    echo "[-s|--stop]                        kills the currently running and paused programs. "
+    echo "[-p|--pause] [program_file]        pauses the currently running program(s)."
+    echo "[-c|--continue] [program_file]     resumes currently paused program(s)."
+    echo "[-l|--list]                        lists currently running programs."
+    echo "[-t|--transfer] program_file       transfers program to staging directory."
+    echo "[-z|--remove] program_file         stop and remove provided program."
+    echo "[-d|--debug] program_file          temporarly runs provided program file."
+    echo "[-dr|--dbgResume]                  terminates debug and resumes state."
+elif [ -s /etc/hobby-hub/out/debug_config.txt ]
+then
+# we're in a debug session
+
+    ####################  DEBUG TERMINATE  ####################
+    if [ $DBGRESUME -eq 1 ]
+    then
+        # first stop the debug program
+        while read -r line
+        do
+            IFS=' '
+            ARG=1
+            read -a strarr <<< "$line"
+            for word in "${strarr[@]}"
+            do
+                if [ $ARG -eq 2 ]
+                then
+                    # we don't actually need to be sudo to execute. circumvented by visudo
+                    sudo /etc/hobby-hub/commands/kill_process.sh $word
+                fi
+                ARG=2
+            done
+        done < "$DEBUG_PROGRAM"
+        truncate -s 0 $DEBUG_PROGRAM
+
+        # resume processes
+        while read -r line
+        do
+            IFS=' '
+            ARG=1
+            read -a strarr <<< "$line"
+            for word in "${strarr[@]}"
+            do
+                if [ $ARG -eq 2 ]
+                then
+                    # we don't actually need to be sudo to execute. circumvented by visudo
+                    sudo /etc/hobby-hub/commands/resume_process.sh $word
+                fi
+                ARG=2
+            done
+        done < "$RUNNING_PROGRAMS"
+
+    else
+        # we're in debug but user doesn't specify reume
+        echo "You're in a debug session. Please resume from debug before performing other operations"
+    fi # end debug resume
+
+else # not in debug. go through normal options
+
+####################  LIST  ####################
+    if [ $LIST -eq 1 ]
+    then
+        echo 'Running Programs:'
+        while read -r line
+        do
+            IFS=' '
+            ARG=1
+            read -a strarr <<< "$line"
+            for word in "${strarr[@]}"
+            do
+                if [ $ARG -eq 1 ]
+                then
+                    b=$(basename $word)
+                    echo $b
+                fi
+                ARG=2
+            done
+        done < "$RUNNING_PROGRAMS"
+
+        echo ' '
+        echo 'Paused Programs:'
+        while read -r line
+        do
+            IFS=' '
+            ARG=1
+            read -a strarr <<< "$line"
+            for word in "${strarr[@]}"
+            do
+                if [ $ARG -eq 1 ]
+                then
+                    b=$(basename $word)
+                    echo $b
+                fi
+                ARG=2
+            done
+        done < "$PAUSED_PROGRAMS"
+        echo ' '
+    fi
+
+    ####################  STOP  ####################
+    if [ $STOP -eq 1 ]
+    then
+        while read -r line
+        do
+            IFS=' '
+            ARG=1
+            read -a strarr <<< "$line"
+            for word in "${strarr[@]}"
+            do
+                if [ $ARG -eq 2 ]
+                then
+                    # we don't actually need to be sudo to execute. circumvented by visudo
+                    sudo /etc/hobby-hub/commands/kill_process.sh $word
+                fi
+                ARG=2
+            done
+        done < "$RUNNING_PROGRAMS"
+        truncate -s 0 $RUNNING_PROGRAMS
+
+        while read -r line
+        do
+            IFS=' '
+            ARG=1
+            read -a strarr <<< "$line"
+            for word in "${strarr[@]}"
+            do
+                if [ $ARG -eq 2 ]
+                then
+                    # we don't actually need to be sudo to execute. circumvented by visudo
+                    sudo /etc/hobby-hub/commands/kill_process.sh $word
+                fi
+                ARG=2
+            done
+        done < "$PAUSED_PROGRAMS"
+        truncate -s 0 $PAUSED_PROGRAMS
+    fi
+
+    ####################  PAUSE  ####################
+    if [ $PAUSE -eq 1 ]
+    then
+        while read -r line
+        do
+            IFS=' '
+            ARG=1
+            read -a strarr <<< "$line"
+            for word in "${strarr[@]}"
+            do
+                if [ $ARG -eq 2 ]
+                then
+                    # we don't actually need to be sudo to execute. circumvented by visudo
+                    sudo /etc/hobby-hub/commands/pause_process.sh $word
+                fi
+                ARG=2
+            done
+            echo "$line" >> "$PAUSED_PROGRAMS"
+        done < "$RUNNING_PROGRAMS"
+        truncate -s 0 $RUNNING_PROGRAMS
+    elif [ $PAUSE -eq 2 ] # pause single program
+    then
+        FOUND=0
+        LINE=1
+        TRIGGER=0
+        while read -r line
+        do
+            IFS=' '
+            ARG=1
+            read -a strarr <<< "$line"
+            for word in "${strarr[@]}"
+            do
+                if [ $ARG -eq 1 ]
+                then
+                    b=$(basename $word)
+                    if [[ $b == $MODIFY_FILE  || $b == "${MODIFY_FILE}.c" || $b == "${MODIFY_FILE}.cpp" ]]
+                    then
+                        FOUND=1
+                        TRIGGER=1
+                    fi
+                fi
+                if [ $ARG -eq 2 ]
+                then
+                    if [ $TRIGGER -eq 1 ]
+                    then
+                        # we don't actually need to be sudo to execute. circumvented by visudo
+                        sudo /etc/hobby-hub/commands/pause_process.sh $word
+                        echo "$line" >> "$PAUSED_PROGRAMS"
+                        TRIGGER=0
+                    fi
+                fi
+                ARG=2
+            done
+            if [ $FOUND -eq 0 ]
+            then
+                ((LINE=LINE+1))
+            fi
+        done < "$RUNNING_PROGRAMS"
+
+        if [ $FOUND -eq 1 ]
+        then
+            # remove the line from the file
+            sed -i "${LINE}d" $RUNNING_PROGRAMS
+        fi
+    fi
+
+    ####################  RESUME  ####################
+    if [ $CONTINUE -eq 1 ]
+    then
+        while read -r line
+        do
+            IFS=' '
+            ARG=1
+            read -a strarr <<< "$line"
+            for word in "${strarr[@]}"
+            do
+                if [ $ARG -eq 2 ]
+                then
+                    # we don't actually need to be sudo to execute. circumvented by visudo
+                    sudo /etc/hobby-hub/commands/resume_process.sh $word
+                fi
+                ARG=2
+            done
+            echo "$line" >> "$RUNNING_PROGRAMS"
+        done < "$PAUSED_PROGRAMS"
+        truncate -s 0 $PAUSED_PROGRAMS
+    elif [ $CONTINUE -eq 2 ] # continue single program
+    then
+        FOUND=0
+        LINE=1
+        TRIGGER=0
+        while read -r line
+        do
+            IFS=' '
+            ARG=1
+            read -a strarr <<< "$line"
+            for word in "${strarr[@]}"
+            do
+                if [ $ARG -eq 1 ]
+                then
+                    b=$(basename $word)
+                    if [[ $b == $MODIFY_FILE  || $b == "${MODIFY_FILE}.c" || $b == "${MODIFY_FILE}.cpp" ]]
+                    then
+                        FOUND=1
+                        TRIGGER=1
+                    fi
+                fi
+                if [ $ARG -eq 2 ]
+                then
+                    if [ $TRIGGER -eq 1 ]
+                    then
+                        # we don't actually need to be sudo to execute. circumvented by visudo
+                        sudo /etc/hobby-hub/commands/resume_process.sh $word
+                        echo "$line" >> "$RUNNING_PROGRAMS"
+                        TRIGGER=0
+                    fi
+                fi
+                ARG=2
+            done
+            if [ $FOUND -eq 0 ]
+            then
+                ((LINE=LINE+1))
+            fi
+        done < "$PAUSED_PROGRAMS"
+
+        if [ $FOUND -eq 1 ]
+        then
+            # remove the line from the file
+            sed -i "${LINE}d" $PAUSED_PROGRAMS
+        fi
+    fi
+   ####################  TRANSFER  ####################
+
+    if [ $TRANSFER -eq 1 ]
+    then
+        if [[ $TRANSFER_FILE == *.py  ||  $TRANSFER_FILE == *.c ||  $TRANSFER_FILE == *.cpp ]]
+        then
+            # we don't actually need to be sudo to execute. circumvented by visudo
+            sudo /etc/hobby-hub/commands/move_process.sh $TRANSFER_FILE
+            sudo /etc/hobby-hub/commands/start_process.sh $TRANSFER_FILE
+        else
+            echo 'unsupported file type for transfer. required *.c , *.cpp , *.py'
+        fi
+    elif [ $TRANSFER -eq 2 ]
+    then
+        echo 'no file to transfer specified. unable to transfer'
+    fi
+
+   ####################  REMOVE  ####################
+
+    if [ $REMOVE -eq 1 ]
+    then
+        FOUND=0
+        TRIGGER=0
+        LINE=1
+        while read -r line
+        do
+            IFS=' '
+            ARG=1
+            read -a strarr <<< "$line"
+            for word in "${strarr[@]}"
+            do
+                if [ $ARG -eq 1 ]
+                then
+                    b=$(basename $word)
+                    if [[ $b == $REMOVE_FILE  || $b == "${REMOVE_FILE}.c" || $b == "${REMOVE_FILE}.cpp" ]]
+                    then
+                        FOUND=1
+                        TRIGGER=1
+                    fi
+                fi
+                if [ $ARG -eq 2 ]
+                then
+                    if [ $TRIGGER -eq 1 ]
+                    then
+                        # we don't actually need to be sudo to execute. circumvented by visudo
+                        sudo /etc/hobby-hub/commands/kill_process.sh $word
+                        TRIGGER=0
+                    fi
+                fi
+                ARG=2
+            done
+            if [ $FOUND -eq 0 ]
+            then
+                ((LINE=LINE+1))
+            fi
+        done < "$RUNNING_PROGRAMS"
+
+        if [ $FOUND -eq 1 ]
+        then
+            # remove the line from the file
+            sed -i "${LINE}d" $RUNNING_PROGRAMS
+        fi
+
+        FOUND=0
+        LINE=1
+        while read -r line
+        do
+            IFS=' '
+            ARG=1
+            read -a strarr <<< "$line"
+            for word in "${strarr[@]}"
+            do
+                if [ $ARG -eq 1 ]
+                then
+                    b=$(basename $word)
+                    if [[ $b == $REMOVE_FILE  || $b == "${REMOVE_FILE}.c" || $b == "${REMOVE_FILE}.cpp" ]]
+                    then
+                        FOUND=1
+                    fi
+                fi
+                if [ $ARG -eq 2 ]
+                then
+                    if [ $FOUND -eq 1 ]
+                    then
+                        # we don't actually need to be sudo to execute. circumvented by visudo
+                        sudo /etc/hobby-hub/commands/kill_process.sh $word
+                    fi
+                fi
+                ARG=2
+            done
+            if [ $FOUND -eq 0 ]
+            then
+                ((LINE=LINE+1))
+            fi
+        done < "$PAUSED_PROGRAMS"
+        if [ $FOUND -eq 1 ]
+        then
+            # remove the line from the file
+            sed -i "${LINE}d" $PAUSED_PROGRAMS
+        fi
+        sudo /etc/hobby-hub/commands/remove_file.sh $REMOVE_FILE
+        
+    elif [ $REMOVE -eq 2 ]
+    then
+        echo "no provided file found or doesn't exist. unable to remove"
+    fi
+
+   ####################  RESTART  ####################
+
+    if [ $RESTART -eq 1 ]
+    then
+        while read -r line
+        do
+            IFS=' '
+            ARG=1
+            read -a strarr <<< "$line"
+            for word in "${strarr[@]}"
+            do
+                if [ $ARG -eq 2 ]
+                then
+                    # we don't actually need to be sudo to execute. circumvented by visudo
+                    sudo /etc/hobby-hub/commands/kill_process.sh $word
+                fi
+                ARG=2
+            done
+        done < "$RUNNING_PROGRAMS"
+        truncate -s 0 $RUNNING_PROGRAMS
+
+        while read -r line
+        do
+            IFS=' '
+            ARG=1
+            read -a strarr <<< "$line"
+            for word in "${strarr[@]}"
+            do
+                if [ $ARG -eq 2 ]
+                then
+                    # we don't actually need to be sudo to execute. circumvented by visudo
+                    sudo /etc/hobby-hub/commands/kill_process.sh $word
+                fi
+                ARG=2
+            done
+        done < "$PAUSED_PROGRAMS"
+        truncate -s 0 $PAUSED_PROGRAMS
+
+    sudo /etc/hobby-hub/commands/start_program_manager.sh
+    fi # end RESTART
+
+    ####################  DEBUG TRIGGER  ####################
+
+    # First pause the running programs
+    if [ $DEBUG -eq 1 ]
+    then
+        while read -r line
+        do
+            IFS=' '
+            ARG=1
+            read -a strarr <<< "$line"
+            for word in "${strarr[@]}"
+            do
+                if [ $ARG -eq 2 ]
+                then
+                    # we don't actually need to be sudo to execute. circumvented by visudo
+                    sudo /etc/hobby-hub/commands/pause_process.sh $word
+                fi
+                ARG=2
+            done
+        done < "$RUNNING_PROGRAMS"
+        # we don't have to update the text file since we'll want to resume the context later...
+
+        if [[ $DEBUG_FILE == *.py  ||  $DEBUG_FILE == *.c ||  $DEBUG_FILE == *.cpp ]]
+        then
+            # we don't actually need to be sudo to execute. circumvented by visudo
+            sudo /etc/hobby-hub/commands/start_debug.sh $DEBUG_FILE
+        else
+            echo 'unsupported file type for transfer. required *.c , *.cpp , *.py'
+        fi
+
+    elif [ $DEBUG -eq 2 ]
+    then
+        echo "no provided file found or doesn't exist. unable to debug"
+    fi # end debug
+
+fi # end main menu
