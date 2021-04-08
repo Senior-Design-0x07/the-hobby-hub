@@ -7,6 +7,6 @@ import subprocess, sys
 
 class test_program1(Resource):
     def get(self):
-        subprocess.run([sys.executable, "/etc/hobby-hub/test_programs/light1.py"])
+        subprocess.run([sys.executable, "/etc/hobby-hub/programs/light1.py"])
         print("Program Finished")
         return redirect("http://192.168.7.2:5000/")
