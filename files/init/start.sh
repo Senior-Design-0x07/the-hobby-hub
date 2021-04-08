@@ -11,7 +11,7 @@ sudo python3 /etc/hobby-hub/program_manager.py /etc/hobby-hub/test_programs/ > /
 
 #Runs Flask Backend Server on startup
 echo " || Starting Web Server ||"
-python /etc/hobby-hub/web/backend/start-server.py
+# python /etc/hobby-hub/web/backend/start-server.py
 
 # test message - viewable in $journalctl
 

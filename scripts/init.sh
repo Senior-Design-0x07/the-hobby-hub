@@ -25,5 +25,5 @@ sudo cp files/system/issue.net /etc/
 # Pin mapping configuration
 echo "{}" | sudo tee -a /etc/hobby-hub/pin_mapping.json # creates empty, but valid JSON file
 chmod og=rw /etc/hobby-hub/pin_mapping.json
-cp files/src/pin_manager.py /etc/hobby-hub/ # pin manager itself
+# cp files/src/hobby_hub_utils/hobby_hub_pkg/pin_manager.py /etc/hobby-hub/ # pin manager itself
 sudo python3 -m pip install /home/debian/the-hobby-hub/files/src/hobby_hub_utils # install package for user dev
