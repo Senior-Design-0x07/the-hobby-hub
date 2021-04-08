@@ -25,6 +25,7 @@ PAUSE=0
 CONTINUE=0
 
 LIST=0
+LOG=0
 TRANSFER=0
 TRANSFER_FILE=""
 DEBUG=0
@@ -138,6 +139,24 @@ do
                 shift # Remove argument value from processing
             fi
         ;;
+        -o|--log) # view's / clears system log
+
+        if [ -z "$2" ]
+        then
+            # just view log
+            LOG=1
+            shift # Remove argument name from processing
+        else
+            if [ "$2" = "clear" ]
+            then
+                LOG=2
+            else
+                echo "invalid argument. only accepts 'clear' "
+            fi
+            shift # Remove argument name from processing
+            shift # Remove argument value from processing
+        fi
+        ;;
         -d|--debug) # Debug provided program
             if [ -z "$2" ]
             then
@@ -184,6 +203,7 @@ then
     echo "[-l|--list]                        lists currently running programs."
     echo "[-t|--transfer] program_file       transfers program to staging directory."
     echo "[-z|--remove] program_file         stop and remove provided program."
+    echo "[-o|--log] [clear]                 views/clears the program log."
     echo "[-d|--debug] program_file          temporarly runs provided program file."
     echo "[-dr|--dbgResume]                  terminates debug and resumes state."
 elif [ -s /etc/hobby-hub/out/debug_config.txt ]
@@ -459,6 +479,15 @@ else # not in debug. go through normal options
     elif [ $TRANSFER -eq 2 ]
     then
         echo 'no file to transfer specified. unable to transfer'
+    fi
+
+    ####################  LOG  ####################
+    if [ $LOG -eq 1 ]
+    then
+        cat /etc/hobby-hub/log.txt
+    elif [ $LOG -eq 2 ]
+    then
+        sudo python3 /etc/hobby-hub/commands/clear_log.py
     fi
 
    ####################  REMOVE  ####################

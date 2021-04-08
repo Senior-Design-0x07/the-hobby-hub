@@ -34,6 +34,7 @@ sudo chmod 777 /etc/hobby-hub/commands/start_process.sh
 sudo chmod 777 /etc/hobby-hub/commands/remove_file.sh
 sudo chmod 777 /etc/hobby-hub/commands/start_program_manager.sh
 sudo chmod 777 /etc/hobby-hub/commands/start_debug.sh
+sudo chmod 777 /etc/hobby-hub/commands/clear_log.py
 
 # Create dev user & group. add new user to required groups.
 sudo useradd --comment "Development User" --user-group --create-home --shell /bin/bash dev
@@ -52,3 +53,7 @@ echo "{}" | sudo tee -a /etc/hobby-hub/pin_mapping.json # creates empty, but val
 chmod og=rw /etc/hobby-hub/pin_mapping.json
 cp files/src/pin_manager.py /etc/hobby-hub/ # pin manager itself
 sudo python3 -m pip install /home/debian/the-hobby-hub/files/src/hobby_hub_utils # install package for user dev
+
+#Log
+sudo touch /etc/hobby-hub/log.txt
+sudo chmod 777 /etc/hobby-hub/log.txt
