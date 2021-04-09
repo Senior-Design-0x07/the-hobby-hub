@@ -4,11 +4,14 @@ import sys
 import json
 import argparse
 import logging
+import os
+from psutil import Process
 
 from .pin import Pin_t, Pin, Led
 
 PIN_MAP_FILE = "/etc/hobby-hub/pin_mapping.json"
 PIN_MANAGER_LOGGING_FILE = '/etc/hobby-hub/logs/pin_manager.log'
+PROGRAM_NAME_CMDLINE_IDX = 2 # python3 /etc/hobby-hub/program_manager.py /etc/hobby-hub/programs/$1
 
 # Table generated based on https://github.com/jadonk/bonescript/blob/master/src/bone.js
 # (Adafruit_BBIO_NAME, Pin_Number)
@@ -224,7 +227,6 @@ def get_pin(pin_config_filename, tag):
         if tag in pin_config:
             value = pin_config[tag]
             logging.info(f'{tag}:{value} found in JSON file')
-            pin_config[tag]["in_use"] = True
             f.seek(0) # should reset file position to the beginning.
             json.dump(pin_config, f, indent=4)
             f.truncate() # remove remaining part
@@ -249,7 +251,7 @@ def clear_unused(pin_config_filename):
     logging.info('Clearing unused pins')
     with open(pin_config_filename, 'r+') as f:
         pin_config = json.load(f)
-        unused_pins = [tag for tag in pin_config if pin_config[tag]["in_use"] == False]
+        unused_pins = [tag for tag in pin_config if len(pin_config[tag]["currently_used_programs"]) > 1]
         for tag in unused_pins:
             logging.info(f'Removing unused pin {tag}')
             del pin_config[tag]
@@ -265,10 +267,11 @@ def request_pin(tag, typ):
         physical_pin = ""
         if tag in pin_config:
             if pin_config[tag]["type"] == typ:
+                pin_config[tag]["currently_used_programs"].append(Process(os.getpid()).cmdline()[PROGRAM_NAME_CMDLINE_IDX])
                 physical_pin = pin_config[tag]["pin"]
             else:
                 raise KeyError("Requested pin " + tag + " of type: " + type + " already found as type: " + pin_config[tag]["type"])
-        else: # TODO fix this logic
+        else:
             used_pins = []
             for config in pin_config.values():
                 used_pins.append(config["pin"])
@@ -276,7 +279,8 @@ def request_pin(tag, typ):
                 if (pin[0] not in used_pins) and (pin[2] == typ):
                     pin_config[tag] = {}
                     pin_config[tag]["pin"] = pin[0]
-                    pin_config[tag]["type" ] = typ
+                    pin_config[tag]["type"] = typ
+                    pin_config[tag]["currently_used_programs"] = [Process(os.getpid()).cmdline()[PROGRAM_NAME_CMDLINE_IDX]]
                     physical_pin = pin[0]
                     break
             f.seek(0) # should reset file position to the beginning.
