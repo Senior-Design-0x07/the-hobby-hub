@@ -8,19 +8,24 @@ parser.add_argument("ssid", type=str, help="Task is required DUDE.", required=Tr
 parser.add_argument("password", type=str, help="Task is required BRO.", required=True)
 
 class Wifi_Requests(Resource):
-    def get(self):
-        os.system("sudo /sbin/iw wlan0 scan | grep SSID > /etc/hobby-hub/wifi_scan/SSID.txt")
-        scanned_networks = []
-        parsed_networks = []
+    def get(self, cmd):
+        if cmd == 'scan':
+            os.system("sudo /sbin/iw wlan0 scan | grep SSID > /etc/hobby-hub/wifi_scan/SSID.txt")
+            scanned_networks = []
+            parsed_networks = []
 
-        f = open("/etc/hobby-hub/wifi_scan/SSID.txt", "r")
-        scanned_networks = f.readlines()
-        f.close()
+            f = open("/etc/hobby-hub/wifi_scan/SSID.txt", "r")
+            scanned_networks = f.readlines()
+            f.close()
 
-        for line in scanned_networks:
-            parsed_networks.append(line.strip())
-         
-        return str(parsed_networks)[1:-1]
+            for line in scanned_networks:
+                parsed_networks.append(line.strip())
+            
+            return str(parsed_networks)[1:-1]
+
+        elif cmd == 'clear':
+            os.system("sudo truncate -s 0 /etc/wpa_supplicant/wpa_supplicant.conf")
+            return True
     
     def post(self):
         args = parser.parse_args()

@@ -13,4 +13,4 @@ CORS(api_bp)
 # Route
 api.add_resource(Example, '/Example')
 api.add_resource(Pin_Manager, '/pin_manager')
-api.add_resource(Wifi_Requests, '/wifi_request')
+api.add_resource(Wifi_Requests, '/wifi_request/<string:cmd>')
