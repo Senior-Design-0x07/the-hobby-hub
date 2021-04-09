@@ -11,7 +11,7 @@ from .pin import Pin_t, Pin, Led
 
 PIN_MAP_FILE = "/etc/hobby-hub/pin_mapping.json"
 PIN_MANAGER_LOGGING_FILE = '/etc/hobby-hub/logs/pin_manager.log'
-PROGRAM_NAME_CMDLINE_IDX = 2 # python3 /etc/hobby-hub/program_manager.py /etc/hobby-hub/programs/$1
+PROGRAM_NAME_CMDLINE_IDX = 1 # python3(0) program.py(1)
 
 # Table generated based on https://github.com/jadonk/bonescript/blob/master/src/bone.js
 # (Adafruit_BBIO_NAME, Pin_Number)
