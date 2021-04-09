@@ -6,6 +6,7 @@ from resources.Example import Example
 from resources.Pin_Manager import Pin_Manager
 from resources.Edit_Pin import Edit_Pin
 from resources.Scan_Wifi import Scan_Wifi
+from resources.Logging import Logging
 
 api_bp = Blueprint('api', __name__)
 api = Api(api_bp)
@@ -16,3 +17,4 @@ api.add_resource(Example, '/Example')
 api.add_resource(Pin_Manager, '/pin_manager/<string:cmd>')
 api.add_resource(Edit_Pin, '/pins/<string:cmd>/<string:pin_name>/<int:typ>')
 api.add_resource(Scan_Wifi, '/scan_wifi')
+api.add_resource(Logging, '/logging/<string:cmd>')
