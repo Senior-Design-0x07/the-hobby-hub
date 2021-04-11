@@ -24,13 +24,22 @@ def main(arguments):
 def clear_unused_pins(program_name):
     with open(PIN_MAP_FILE, 'r+') as f:
         pin_config = json.load(f)
+        removed_pins = []
         for tag in pin_config:  # loop through each pin
-            programs = tag["currently_used_programs"]
+            programs = pin_config[tag]["currently_used_programs"]
             running_programs = []
             for program in programs:  # loop though each program attached to the pin
                 if program != program_name:
                     running_programs.append(program)
-            if running_programs == "":  # if no programs need the pin, remove pin.
-                pin_config.pop(tag)
+            if running_programs == []:  # if no programs need the pin, remove pin.
+                removed_pins.append(tag)
             else:
-                tag["currently_used_programs"] = running_programs
+                pin_config[tag]["currently_used_programs"] = running_programs
+        for tag in removed_pins:
+            pin_config.pop(tag)
+        f.seek(0)
+        json.dump(pin_config, f, indent=4)
+        f.truncate()
+
+if __name__ == '__main__':
+    sys.exit(main(sys.argv[1:]))

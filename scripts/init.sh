@@ -34,6 +34,7 @@ sudo chmod 777 /etc/hobby-hub/commands/start_process.sh
 sudo chmod 777 /etc/hobby-hub/commands/remove_file.sh
 sudo chmod 777 /etc/hobby-hub/commands/start_program_manager.sh
 sudo chmod 777 /etc/hobby-hub/commands/start_debug.sh
+sudo chmod 777 /etc/hobby-hub/commands/clear_pin.py
 
 # Create dev user & group. add new user to required groups.
 sudo useradd --comment "Development User" --user-group --create-home --shell /bin/bash dev
