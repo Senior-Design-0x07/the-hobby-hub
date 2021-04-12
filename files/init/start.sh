@@ -7,7 +7,7 @@
 sudo /etc/hobby-hub/cron/wifi_scripts.sh
 
 # Start program manager
-sudo python3 /etc/hobby-hub/program_manager.py /etc/hobby-hub/test_programs/ > /etc/hobby-hub/out/running_programs.txt
+sudo python3 /etc/hobby-hub/program_manager.py /etc/hobby-hub/programs/ > /etc/hobby-hub/out/running_programs.txt
 
 #Runs Flask Backend Server on startup
 echo " || Starting Web Server ||"

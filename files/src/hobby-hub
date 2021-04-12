@@ -3,14 +3,14 @@
 ## Author: Draven Schilling
 ## Publication Date: 1-25-21
 ## Rev: 0.1
-## Description: Provides interfacing commands for the user that manipulate the running programs 
+## Description: Provides interfacing commands for the user that manipulate the running programs
 
 # Global Directories
 
 RUNNING_PROGRAMS="/etc/hobby-hub/out/running_programs.txt"
 PAUSED_PROGRAMS="/etc/hobby-hub/out/paused_programs.txt"
 DEBUG_PROGRAM="/etc/hobby-hub/out/debug_config.txt"
-PROGRAMS_DIR="/etc/hobby-hub/test_programs/"
+PROGRAMS_DIR="/etc/hobby-hub/programs/"
 
 ## OPTIONS PROVIDED ##
 ## 0 = not provided ##
@@ -70,7 +70,7 @@ do
             shift # Remove argument name from processing
         else
             MODIFY_FILE="$2"
-            if [ -f /etc/hobby-hub/test_programs/$MODIFY_FILE ]
+            if [ -f /etc/hobby-hub/programs/$MODIFY_FILE ]
             then
                 PAUSE=2
             else
@@ -88,7 +88,7 @@ do
             shift # Remove argument name from processing
         else
             MODIFY_FILE="$2"
-            if [ -f /etc/hobby-hub/test_programs/$MODIFY_FILE ]
+            if [ -f /etc/hobby-hub/programs/$MODIFY_FILE ]
             then
                 CONTINUE=2
             else
@@ -127,9 +127,9 @@ do
                 echo nope
                 shift # Remove argument name from processing
             else
-                
+
                 REMOVE_FILE="$2"
-                if [ -f /etc/hobby-hub/test_programs/$REMOVE_FILE ]
+                if [ -f /etc/hobby-hub/programs/$REMOVE_FILE ]
                 then
                     REMOVE=1
                 else
@@ -574,7 +574,7 @@ else # not in debug. go through normal options
             sed -i "${LINE}d" $PAUSED_PROGRAMS
         fi
         sudo /etc/hobby-hub/commands/remove_file.sh $REMOVE_FILE
-        
+
     elif [ $REMOVE -eq 2 ]
     then
         echo "no provided file found or doesn't exist. unable to remove"
