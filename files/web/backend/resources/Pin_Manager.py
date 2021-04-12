@@ -2,7 +2,7 @@ from flask_restful import Resource, reqparse
 from flask import json
 import subprocess, sys
 
-from hobby_hub_pkg.pin_manager import update_pin,get_pin,reset,clear_unused,request_pin
+from hobby_hub_pkg.pin_manager import update_pin,reset,clear_unused
 
 class Pin_Manager(Resource):
     def get(self, cmd):
