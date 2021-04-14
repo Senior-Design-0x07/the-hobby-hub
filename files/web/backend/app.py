@@ -3,7 +3,6 @@ from flask_restful import Api
 from flask_cors import CORS
 
 from resources.Pin_Manager import Pin_Manager
-from resources.Edit_Pin import Edit_Pin
 from resources.Scan_Wifi import Scan_Wifi
 
 api_bp = Blueprint('api', __name__)
@@ -12,5 +11,4 @@ CORS(api_bp)
 
 # Route
 api.add_resource(Pin_Manager, '/pin_manager/<string:cmd>')
-api.add_resource(Edit_Pin, '/pins/<string:cmd>/<string:pin_name>/<int:typ>')
 api.add_resource(Scan_Wifi, '/scan_wifi')
