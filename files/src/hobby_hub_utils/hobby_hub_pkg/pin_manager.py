@@ -189,26 +189,31 @@ def update_pin(pin_config_filename, tag, pin):
     Args:
         tag (str): tag to update
         pin (str): new physical pin id
+
+    Returns:
+        True if pin was updated, False otherwise
     """
     logging.info(f'Updating pin {tag}')
     with open(pin_config_filename, 'r+') as f:
         pin_config = json.load(f)
         if tag not in pin_config:
             logging.info(f'Pin {tag} not found - not updating')
-            return
-        for pin in pin_table:
-            if pin[0] == pin:
-                if pin[2] != pin_config[tag]['type']:
+            return False
+        for pin_tup in pin_table:
+            if pin_tup[0] == pin:
+                if pin_tup[2] != pin_config[tag]['type']:
                     logging.info(f'Pin {tag} is a different type - not updating')
+                    return False
                 else:
                     pin_config[tag]['pin'] = pin
                     f.seek(0) # should reset file position to the beginning.
                     json.dump(pin_config, f, indent=4)
                     f.truncate() # remove remaining part
                     logging.info(f'Pin {tag} updated to use {pin}')
-                    return
+                    return True
 
-    logging.info(f'{pin} is not a valid pin')
+        logging.info(f'{pin} is not a valid pin')
+        return False
 
 
 def get_pin(pin_config_filename, tag):
