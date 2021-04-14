@@ -1,3 +1,6 @@
+import datetime
+
+
 class Log:
 
     __log_file = None
@@ -11,7 +14,9 @@ class Log:
             raise Exception('invalid log file')
 
     def write(self, message):
-        self.__log_file.write(message + "\n")
+        ct = datetime.datetime.now()
+        time = ct.strftime("%x") + " " + ct.strftime("%X")
+        self.__log_file.write(time + message + "\n")
         self.__log_file.flush()
 
     def clear(self):
