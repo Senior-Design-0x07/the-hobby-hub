@@ -14,4 +14,3 @@ class Get_IP:
             return True
         else:
             return False
-
