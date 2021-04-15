@@ -15,7 +15,8 @@ class Log:
 
     def write(self, message):
         ct = datetime.datetime.now()
-        time = ct.strftime("%x") + " " + ct.strftime("%X")
+        date = ct.strftime("%x").split("/")
+        time = date[0] + "-" + date[1] + " " + ct.strftime("%X")
         self.__log_file.write(time + message + "\n")
         self.__log_file.flush()
 
