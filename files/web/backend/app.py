@@ -12,7 +12,7 @@ api = Api(api_bp)
 CORS(api_bp)
 
 # Route
-api.add_resource(Pin_Manager, '/pin_manager')
 api.add_resource(Wifi_Requests, '/wifi_request/<string:cmd>')
 api.add_resource(Pin_Manager, '/pin_manager/<string:cmd>')
+api.add_resource(Logging, '/logging/<string:cmd>')
 api.add_resource(Edit_Pin, '/pins/<string:cmd>/<string:pin_name>/<int:typ>')
