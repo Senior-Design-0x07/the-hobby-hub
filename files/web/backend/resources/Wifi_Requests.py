@@ -4,8 +4,8 @@ import os
 import subprocess
 
 parser = reqparse.RequestParser()
-parser.add_argument("ssid", type=str, help="Task is required DUDE.", required=True)
-parser.add_argument("password", type=str, help="Task is required BRO.", required=True)
+parser.add_argument("ssid", type=str, help="Need valid SSID", required=True)
+parser.add_argument("password", type=str, help="Need valid password", required=True)
 
 class Wifi_Requests(Resource):
     def get(self, cmd):
