@@ -10,7 +10,5 @@ class Get_IP:
     
     def check_ping():
         response = os.system("ping -4 www.google.com")
-        if response == 0:
-            return True
-        else:
-            return False
+        
+        return True if response == 0 else False
