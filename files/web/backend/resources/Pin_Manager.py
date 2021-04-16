@@ -25,9 +25,8 @@ class Pin_Manager(Resource):
         elif(cmd == "grab_physical_pins"):
             return pin_table
         elif(cmd == 'clear_unused'):
-            # subprocess.call(['sudo','python3','/etc/hobby-hub/pin_manager.py','-c','/etc/hobby-hub/pin_mapping.json'])
             clear_unused("/etc/hobby-hub/pin_mapping.json")
-            return 'false' if True else False 
+            return 'true' if True else False 
         elif(cmd == 'reset_config'):
             reset("/etc/hobby-hub/pin_mapping.json")
             return 'true' if True else False

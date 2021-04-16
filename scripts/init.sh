@@ -19,6 +19,9 @@ sudo chmod 777 /etc/hobby-hub/out/debug_config.txt
 
 cp files/src/program_manager.py /etc/hobby-hub/ # program manager itself
 
+# Wifi dependencies
+cp -R files/wifi_scan /etc/hobby-hub/
+
 # Hobby-hub command line utilitiy
 cp files/src/hobby-hub /usr/bin/
 sudo chmod 777 /usr/bin/hobby-hub
