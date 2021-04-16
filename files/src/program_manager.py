@@ -20,32 +20,43 @@ def main(arguments):
     Args:
         arguments (list): list of arguments
     """
-    parser = argparse.ArgumentParser(description=__doc__)
+    py_files = []
+    c_files = []
+    cpp_files = []
+    if os.path.isdir(arguments[0]):  
+        parser = argparse.ArgumentParser(description=__doc__)
 
-    parser.add_argument('program_directory',
-                        help="Directory containing user programs to run",
-                        type=dir_path)
+        parser.add_argument('program_directory',
+                            help="Directory containing user programs to run",
+                            type=dir_path)
 
-    # TODO add output file for each program in a specified output directory
+        # TODO add output file for each program in a specified output directory
 
-    args = parser.parse_args(arguments)
+        args = parser.parse_args(arguments)
+        # get directory of programs
+        program_dir = Path(args.program_directory)
 
-    # get directory of programs
-    program_dir = Path(args.program_directory)
+        # extract programs
+        py_files = list(program_dir.glob('**/*.py'))
+        c_files = list(program_dir.glob('**/*.c'))
+        cpp_files = list(program_dir.glob('**/*.cpp'))
 
-    # extract programs
-    py_files = list(program_dir.glob('**/*.py'))
-    c_files = list(program_dir.glob('**/*.c'))
-    cpp_files = list(program_dir.glob('**/*.cpp'))
+    elif os.path.isfile(arguments[0]):  
+        program_dir = os.path.dirname(os.path.realpath(arguments[0]))
+        extension = os.path.splitext(arguments[0])[1][1:]
+        
+        if extension == 'py':
+            py_files.append(arguments[0])
+        elif extension == 'c':
+            c_files.append(arguments[0])
+        elif extension == 'cpp':
+            cpp_files.append(arguments[0])
 
     programs = {} # program name : program id
 
     for program in py_files:
         pid = Popen(["python3", program]).pid
         programs[program] = pid
-
-    if c_files or cpp_files:
-        print('Compiling source files...')
 
     Path(program_dir, 'obj').mkdir(exist_ok=True)
     for source_file in c_files + cpp_files:
@@ -54,13 +65,8 @@ def main(arguments):
         pid = Popen([program]).pid
         programs[program] = pid
 
-    if c_files or cpp_files:
-        print('Finished compilation')
-
-    print(f'Now running:')
     for program, pid in programs.items():
-        print(f'Program: {program}, pid: {pid}')
-
+        print(f'{program} {pid}')
 
 def dir_path(string):
     if os.path.isdir(string):
