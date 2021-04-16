@@ -33,4 +33,4 @@ class Wifi_Requests(Resource):
         os.system(command)
         subprocess.run("/etc/hobby-hub/cron/wifi_scripts.sh")
 
-        return {"num_backend": 5,"string_backend": "Hello From Flask in Example.py"}
+        return True
