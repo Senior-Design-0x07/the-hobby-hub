@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setuptools.setup(
     name="hobby-hub-pkg", 
-    version="0.0.3",
+    version="0.0.4",
     author="Rock, Draven, Anthony, Declan, Andy",
     author_email="schillingdl@msoe.edu",
     description="Hobby Hub utility package. Developed for BeagleBone Green",
