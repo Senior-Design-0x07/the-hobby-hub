@@ -22,9 +22,19 @@ class Program_Command(Resource):
         elif(args["command"] == 'stop_program'):
             # stop the supplied program completely (provided program is running)
             program_command = "sudo hobby-hub -s " + args["program"]
-            os.system("sudo hobby-hub -s " + args["program"])
+            os.system(program_command)
+        
+        elif(args["command"] == 'stop_ALLprograms'):
+            # stop the supplied program completely (provided program is running)
+            program_command = "sudo hobby-hub -s"
+            os.system(program_command)
 
         elif(args["command"] == 'start_program'):
             # start the supplied program
             program_command = "sudo hobby-hub -t " + args["program"]
+            os.system(program_command)
+        
+        elif(args["command"] == 'restart_ALLprograms'):
+            # stop the supplied program completely (provided program is running)
+            program_command = "sudo hobby-hub -r"
             os.system(program_command)
