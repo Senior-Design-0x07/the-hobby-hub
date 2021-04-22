@@ -12,7 +12,6 @@ def create_app(config_filename):
     @app.route('/')
     def index():
         return redirect('http://192.168.7.2:5000/index.html')
-
     return app
 
 if __name__ == "__main__":

@@ -1,13 +1,12 @@
-import Adafruit_BBIO.GPIO as GPIO
-import time
+from hobby_hub_pkg.pin_manager import get_led
+from time import sleep
 
-USR0_LED = "USR0"
+led = get_led("myled0")
 delay = 1
-GPIO.setup(USR0_LED, GPIO.OUT)
 
-while (True):
-    GPIO.output(USR0_LED, GPIO.HIGH)
-    time.sleep(delay)
+while True:
+    led.turn_on()
+    sleep(delay)
 
-    GPIO.output(USR0_LED, GPIO.LOW)
-    time.sleep(delay)
+    led.turn_off()
+    sleep(delay)

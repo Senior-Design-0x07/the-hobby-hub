@@ -41,3 +41,5 @@
 # -- Frontend
 *.last_build_id
 web/frontend/assets/NOTICES
+
+env/
