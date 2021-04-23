@@ -4,11 +4,14 @@ import sys
 import json
 import argparse
 import logging
+import os
+from psutil import Process
 
 from .pin import Pin_t, Pin, Led
 
 PIN_MAP_FILE = "/etc/hobby-hub/pin_mapping.json"
 PIN_MANAGER_LOGGING_FILE = '/etc/hobby-hub/logs/pin_manager.log'
+PROGRAM_NAME_CMDLINE_IDX = 1 # python3(0) program.py(1)
 
 # Table generated based on https://github.com/jadonk/bonescript/blob/master/src/bone.js
 # (Adafruit_BBIO_NAME, Pin_Number)
@@ -229,7 +232,6 @@ def get_pin(pin_config_filename, tag):
         if tag in pin_config:
             value = pin_config[tag]
             logging.info(f'{tag}:{value} found in JSON file')
-            pin_config[tag]["in_use"] = True
             f.seek(0) # should reset file position to the beginning.
             json.dump(pin_config, f, indent=4)
             f.truncate() # remove remaining part
@@ -254,7 +256,7 @@ def clear_unused(pin_config_filename):
     logging.info('Clearing unused pins')
     with open(pin_config_filename, 'r+') as f:
         pin_config = json.load(f)
-        unused_pins = [tag for tag in pin_config if pin_config[tag]["in_use"] == False]
+        unused_pins = [tag for tag in pin_config if len(pin_config[tag]["currently_used_programs"]) > 1]
         for tag in unused_pins:
             logging.info(f'Removing unused pin {tag}')
             del pin_config[tag]
@@ -265,15 +267,27 @@ def clear_unused(pin_config_filename):
 
 
 def request_pin(tag, typ):
+    """Request an available physical pin from the pin manager of a specified type
+
+    The requested pin will be added to the pin manager
+
+    Args:
+        tag (str): tag of pin - created if not already in pin config
+        typ (Pin_t): type of pin - e.g GPIO, LED
+
+    Returns:
+        str: physcial pin name as defined in Adafruit_BBIO
+    """
     with open(PIN_MAP_FILE, 'r+') as f:
         pin_config = json.load(f)
         physical_pin = ""
         if tag in pin_config:
             if pin_config[tag]["type"] == typ:
+                pin_config[tag]["currently_used_programs"].append(Process(os.getpid()).cmdline()[PROGRAM_NAME_CMDLINE_IDX])
                 physical_pin = pin_config[tag]["pin"]
             else:
                 raise KeyError("Requested pin " + tag + " of type: " + type + " already found as type: " + pin_config[tag]["type"])
-        else: # TODO fix this logic
+        else:
             used_pins = []
             for config in pin_config.values():
                 used_pins.append(config["pin"])
@@ -281,7 +295,8 @@ def request_pin(tag, typ):
                 if (pin[0] not in used_pins) and (pin[2] == typ):
                     pin_config[tag] = {}
                     pin_config[tag]["pin"] = pin[0]
-                    pin_config[tag]["type" ] = typ
+                    pin_config[tag]["type"] = typ
+                    pin_config[tag]["currently_used_programs"] = [Process(os.getpid()).cmdline()[PROGRAM_NAME_CMDLINE_IDX]]
                     physical_pin = pin[0]
                     break
             f.seek(0) # should reset file position to the beginning.
@@ -293,10 +308,27 @@ def request_pin(tag, typ):
 
 
 def get_gpio(tag):
+    """Get a GPIO object for the pin. Sets up the GPIO pin and allows for setting the pin high and low.
+
+    Args:
+        tag (str): tag of GPIO pin - created if not already in pin config
+
+    Returns:
+        GPIO: `pin.Pin` object
+    """
     return Pin(request_pin(tag, Pin_t.GPIO))
 
 
 def get_led(tag):
+    """
+    Get a LED object for the pin. Sets up the LED and allows for turning it on and off.
+
+    Args:
+        tag (str): tag of LED pin - created if not already in pin config
+
+    Returns:
+        LED: `pin.LED` object
+    """
     return Led(request_pin(tag, Pin_t.SPECIAL))
 
 
