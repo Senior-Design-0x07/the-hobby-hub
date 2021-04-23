@@ -51,7 +51,7 @@ class Program_Manager(Resource):
         elif(cmd == 'stop_program'):
             # stop the supplied program completely (provided program is running)
             program_command = "sudo hobby-hub -s " + args["program"]
-            os.system("sudo hobby-hub -s " + args["program"])
+            os.system(program_command)
 
         elif(cmd == 'start_program'):
             # start the supplied program
