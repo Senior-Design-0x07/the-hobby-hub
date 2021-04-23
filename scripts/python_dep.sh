@@ -34,6 +34,7 @@ if [ $FAST -eq 0 ]
   pip3 install marshmallow==2.14.0
   pip3 install flask_marshmallow==0.8.0
   pip3 install -U flask-cors
+  pip3 install psutil
 # # -- For HTTPS
 # pip3 install pyopenssl
 # # -- For redirecting http to https 

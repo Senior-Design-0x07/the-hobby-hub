@@ -497,6 +497,8 @@ else # not in debug. go through normal options
         FOUND=0
         TRIGGER=0
         LINE=1
+        prog_name=""
+
         while read -r line
         do
             IFS=' '
@@ -506,6 +508,7 @@ else # not in debug. go through normal options
             do
                 if [ $ARG -eq 1 ]
                 then
+                    prog_name=$word
                     b=$(basename $word)
                     if [[ $b == $REMOVE_FILE  || $b == "${REMOVE_FILE}.c" || $b == "${REMOVE_FILE}.cpp" ]]
                     then
@@ -519,6 +522,7 @@ else # not in debug. go through normal options
                     then
                         # we don't actually need to be sudo to execute. circumvented by visudo
                         sudo /etc/hobby-hub/commands/kill_process.sh $word
+						sudo /etc/hobby-hub/commands/remove_process.sh $prog_name
                         TRIGGER=0
                     fi
                 fi
@@ -537,7 +541,9 @@ else # not in debug. go through normal options
         fi
 
         FOUND=0
+		TRIGGER=0
         LINE=1
+        
         while read -r line
         do
             IFS=' '
@@ -547,18 +553,22 @@ else # not in debug. go through normal options
             do
                 if [ $ARG -eq 1 ]
                 then
+                    prog_name=$word
                     b=$(basename $word)
                     if [[ $b == $REMOVE_FILE  || $b == "${REMOVE_FILE}.c" || $b == "${REMOVE_FILE}.cpp" ]]
                     then
                         FOUND=1
+						TRIGGER=1
                     fi
                 fi
                 if [ $ARG -eq 2 ]
                 then
-                    if [ $FOUND -eq 1 ]
+                    if [ $TRIGGER -eq 1 ]
                     then
                         # we don't actually need to be sudo to execute. circumvented by visudo
                         sudo /etc/hobby-hub/commands/kill_process.sh $word
+						sudo /etc/hobby-hub/commands/remove_process.sh $prog_name
+						TRIGGER=0
                     fi
                 fi
                 ARG=2
