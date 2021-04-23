@@ -267,6 +267,17 @@ def clear_unused(pin_config_filename):
 
 
 def request_pin(tag, typ):
+    """Request an available physical pin from the pin manager of a specified type
+
+    The requested pin will be added to the pin manager
+
+    Args:
+        tag (str): tag of pin - created if not already in pin config
+        typ (Pin_t): type of pin - e.g GPIO, LED
+
+    Returns:
+        str: physcial pin name as defined in Adafruit_BBIO
+    """
     with open(PIN_MAP_FILE, 'r+') as f:
         pin_config = json.load(f)
         physical_pin = ""
@@ -297,10 +308,27 @@ def request_pin(tag, typ):
 
 
 def get_gpio(tag):
+    """Get a GPIO object for the pin. Sets up the GPIO pin and allows for setting the pin high and low.
+
+    Args:
+        tag (str): tag of GPIO pin - created if not already in pin config
+
+    Returns:
+        GPIO: `pin.Pin` object
+    """
     return Pin(request_pin(tag, Pin_t.GPIO))
 
 
 def get_led(tag):
+    """
+    Get a LED object for the pin. Sets up the LED and allows for turning it on and off.
+
+    Args:
+        tag (str): tag of LED pin - created if not already in pin config
+
+    Returns:
+        LED: `pin.LED` object
+    """
     return Led(request_pin(tag, Pin_t.SPECIAL))
 
 
