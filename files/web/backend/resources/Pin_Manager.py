@@ -26,26 +26,21 @@ class Pin_Manager(Resource):
             return pin_table
         elif(cmd == 'clear_unused'):
             clear_unused("/etc/hobby-hub/pin_mapping.json")
-            return 'true' if True else False 
+            return True 
         elif(cmd == 'reset_config'):
             reset("/etc/hobby-hub/pin_mapping.json")
-            return 'true' if True else False
+            return True
     def post(self, cmd):
         if(cmd == 'request_pin'):
-            # ** THIS METHOD grabs the number of pins that use the type you search for **
-            # cmdResult = subprocess.Popen(['sudo','python3','/etc/hobby-hub/pin_manager.py', '-r', pin_name, '/etc/hobby-hub/pin_mapping.json'], stdout=subprocess.PIPE)
-            # tuple1 = cmdResult.communicate()[0]
-            # string_dict = tuple1.decode("utf-8")
             args = requestPinParser.parse_args()
-            string_dict = request_pin(args["pin_name"],int(args["pin_type"]))
-            print("BLAH: " + string_dict)
-            # pin = json.loads(string_dict)
-            return 'true' if True else False
+            try:
+                physical_pin = request_pin(args["pin_name"],int(args["pin_type"]))
+                return True
+            except:
+                return False
         elif(cmd == 'get_pin'):
             args = getPinParser.parse_args()
-            foundPin = get_pin("/etc/hobby-hub/pin_mapping.json", args["pin_name"])
-            return foundPin
+            return get_pin("/etc/hobby-hub/pin_mapping.json", args["pin_name"])
         elif(cmd == 'update_pin'):
             args = updatePinParser.parse_args()
-            didItWork = update_pin("/etc/hobby-hub/pin_mapping.json",args["pin_name"],args["new_physical_pin"])
-            return didItWork
+            return update_pin("/etc/hobby-hub/pin_mapping.json",args["pin_name"],args["new_physical_pin"])
