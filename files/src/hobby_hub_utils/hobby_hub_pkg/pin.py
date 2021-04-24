@@ -7,6 +7,8 @@ class Pin_t:
     I2C = 3
     ANALOG = 4
     SPECIAL = 5
+    UART = 6
+    SPI = 7
 
 
 class Pin:
