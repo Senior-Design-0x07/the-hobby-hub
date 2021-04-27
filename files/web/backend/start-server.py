@@ -19,5 +19,5 @@ def create_app(config_filename):
 
 if __name__ == "__main__":
     app = create_app("config")
-    app.run(debug=True, host='0.0.0.0')
+    app.run(debug=False, host='0.0.0.0')
     # app.run(debug=True, host='0.0.0.0', ssl_context=('certificates/server.crt','certificates/server.key'))
