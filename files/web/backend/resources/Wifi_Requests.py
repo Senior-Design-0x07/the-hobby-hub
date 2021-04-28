@@ -2,6 +2,7 @@ from flask_restful import Resource, reqparse
 from flask import json
 import os
 import subprocess
+from resources.Get_IP import Get_IP
 
 parser = reqparse.RequestParser()
 parser.add_argument("ssid", type=str, help="Need valid SSID", required=True)
@@ -26,6 +27,10 @@ class Wifi_Requests(Resource):
         elif cmd == 'clear':
             os.system("sudo truncate -s 0 /etc/wpa_supplicant/wpa_supplicant.conf")
             return True
+        elif cmd == 'ping':
+            return Get_IP.check_ping()
+        elif cmd == 'get_ip':
+            return Get_IP.return_ip()
     
     def post(self):
         args = parser.parse_args()

@@ -15,4 +15,4 @@ class Logging(Resource):
         elif(cmd == 'clear'):
             syslog = Log()
             syslog.clear()
-            return 'true' if True else False        
+            return True        
