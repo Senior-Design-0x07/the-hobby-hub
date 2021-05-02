@@ -27,6 +27,7 @@ class Output_Pin:
             GPIO.output(self.name, GPIO.LOW)
             self.high = False
             
+            
 class Input_Pin:
 
     def __init__(self, name):
@@ -35,8 +36,16 @@ class Input_Pin:
     
     def get(self):
         return GPIO.input("name")
-
-
+    
+    def setPUPDR(self, dir)
+        if dir == "DOWN":
+            GPIO.setup(name, GPIO.IN, GPIO.PUP_DOWN)
+        if dir == "UP":
+            GPIO.setup(name, GPIO.IN, GPIO.PUP_UP)
+        if dir == "OFF":
+            GPIO.setup(name, GPIO.IN, GPIO.PUP_OFF)
+        
+        
 class Led(Output_Pin):
 
     def turn_on(self):
