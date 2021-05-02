@@ -2,7 +2,6 @@ from flask_restful import Resource, reqparse
 import os
 
 parser = reqparse.RequestParser()
-parser.add_argument("command", type=str, required=True)
 parser.add_argument("program", type=str, required=True)
 
 class Program_Manager(Resource):
@@ -19,7 +18,7 @@ class Program_Manager(Resource):
 
                 for line in running_programs_raw:
                     running_programs_list.append(line.strip())                    
-                
+
             return running_programs_list
 
         elif(cmd == 'paused_programs'):

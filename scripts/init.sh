@@ -2,6 +2,7 @@
 
 # Hobby Hub system configuration directory
 mkdir -p /etc/hobby-hub/
+sudo mkdir -p /etc/hobby-hub/test_programs/
 
 # Startup script
 cp files/init/start.sh /etc/hobby-hub/
