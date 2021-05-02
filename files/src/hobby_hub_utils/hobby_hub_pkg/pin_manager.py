@@ -7,7 +7,7 @@ import logging
 import os
 from psutil import Process
 
-from .pin import Pin_t, Pin, Led
+from .pin import Pin_t, Output_Pin, Input_Pin, Led
 
 PIN_MAP_FILE = "/etc/hobby-hub/pin_mapping.json"
 PIN_MANAGER_LOGGING_FILE = '/etc/hobby-hub/logs/pin_manager.log'
@@ -307,16 +307,19 @@ def request_pin(tag, typ):
         return physical_pin
 
 
-def get_gpio(tag):
+def get_gpio(tag, GPIO_t):
     """Get a GPIO object for the pin. Sets up the GPIO pin and allows for setting the pin high and low.
 
     Args:
         tag (str): tag of GPIO pin - created if not already in pin config
 
     Returns:
-        GPIO: `pin.Pin` object
+        GPIO: `pin.Input_Pin or pin.Output_Pin` object
     """
-    return Pin(request_pin(tag, Pin_t.GPIO))
+    if GPIO_t == "IN":
+        return Input_Pin(request_pin(tag, Pin_t.GPIO))
+    else:
+        return Output_Pin(request_pin(tag, Pin_t.GPIO))
 
 
 def get_led(tag):

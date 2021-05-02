@@ -1,6 +1,5 @@
 import Adafruit_BBIO.GPIO as GPIO
 
-
 class Pin_t:
     GPIO = 1
     PWM = 2
@@ -11,7 +10,7 @@ class Pin_t:
     SPI = 7
 
 
-class Pin:
+class Output_Pin:
 
     def __init__(self, name):
         self.name = name
@@ -27,9 +26,18 @@ class Pin:
         if self.high is True:
             GPIO.output(self.name, GPIO.LOW)
             self.high = False
+            
+class Input_Pin:
+
+    def __init__(self, name):
+        self.name = name
+        GPIO.setup(name, GPIO.IN)
+    
+    def get(self):
+        return GPIO.input("name")
 
 
-class Led(Pin):
+class Led(Output_Pin):
 
     def turn_on(self):
         self.set_high()
