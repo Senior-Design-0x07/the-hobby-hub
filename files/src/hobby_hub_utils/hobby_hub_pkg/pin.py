@@ -35,7 +35,7 @@ class Input_Pin:
         GPIO.setup(name, GPIO.IN)
     
     def get(self):
-        return GPIO.input("name")
+        return GPIO.input(name)
     
     def setPUPDR(self, dir)
         if dir == "DOWN":

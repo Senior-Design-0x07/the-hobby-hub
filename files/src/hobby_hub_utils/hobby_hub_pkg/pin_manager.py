@@ -312,6 +312,7 @@ def get_gpio(tag, GPIO_t):
 
     Args:
         tag (str): tag of GPIO pin - created if not already in pin config
+        GPIO_t (str): gpio direction type. "IN" for input or "OUT" for output
 
     Returns:
         GPIO: `pin.Input_Pin or pin.Output_Pin` object
